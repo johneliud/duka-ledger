@@ -15,7 +15,15 @@ This is an offline-first shop bookkeeper that serves as a simple sales & expense
    npm install
    ```
 
-3. Start the development server:
+3. Configure environment variables:
+   - Create `.env.local` with your Supabase credentials and JWT secret
+
+4. Start the backend server:
+   ```bash
+   npm run server
+   ```
+
+5. Start the development server (in another terminal):
    ```bash
    npm run dev
    ```
