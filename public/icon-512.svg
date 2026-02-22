@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#c4622d"/>
+  <rect width="512" height="512" fill="none"/>
   <text
     x="50%"
     y="50%"
@@ -7,7 +7,7 @@
     text-anchor="middle"
     font-size="320"
     font-family="Arial, Helvetica, sans-serif"
-    fill="#fef7ee"
+    fill="#c4622d"
     font-weight="bold"
   >
     D
