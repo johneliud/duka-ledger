@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { registerSW } from 'virtual:pwa-register'
 import { db } from './db/powersync'
+import { AuthProvider } from './hooks/useAuth'
 
 const updateSW = registerSW({
 	onNeedRefresh() {
@@ -29,7 +30,11 @@ function Root() {
 		})
 	}, [])
 
-	return <App />
+	return (
+		<AuthProvider>
+			<App />
+		</AuthProvider>
+	)
 }
 
 createRoot(document.getElementById('root')!).render(
