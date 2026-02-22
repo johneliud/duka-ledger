@@ -1,73 +1,50 @@
-# React + TypeScript + Vite
+# Duka Ledger
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is an offline-first shop bookkeeper that serves as a simple sales & expense tracker for market vendors and kiosk owners who can't rely on cloud accounting tools. They record sales, stock, and debts locally all day, then it syncs to a shared ledger when they hit WiFi at home.
 
-Currently, two official plugins are available:
+## Setup Instructions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/johneliud/duka-ledger
+   cd duka-ledger
+   ```
 
-## React Compiler
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+3. Configure environment variables:
+   - Create `.env.local` with your Supabase credentials and JWT secret
 
-## Expanding the ESLint configuration
+4. Start the backend server:
+   ```bash
+   npm run server
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+5. Start the development server (in another terminal):
+   ```bash
+   npm run dev
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Project Structure
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── db/           # PowerSync schema, instance, and connector
+├── pages/        # Dashboard, RecordSale, Expenses, DebtBook
+├── components/   # SyncBadge, BottomNav, AmountInput, etc.
+├── hooks/        # useSync, useNetworkStatus, useDB
+├── lib/          # utils, formatters, constants
+└── types/        # TypeScript interfaces
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Path Aliases
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The project uses `@/` as an alias for the `src/` directory. Import modules like:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```typescript
+import { MyComponent } from '@/components/MyComponent'
+import { useSync } from '@/hooks/useSync'
 ```
