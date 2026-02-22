@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" fill="none"/>
   <text
     x="50%"
     y="50%"
     dominant-baseline="middle"
     text-anchor="middle"
-    font-size="24"
+    font-size="120"
     font-family="Arial, Helvetica, sans-serif"
     fill="#c4622d"
     font-weight="bold"
