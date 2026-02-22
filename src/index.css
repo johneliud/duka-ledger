@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+
+:root {
+  --bg: #fef7ee;
+  --surface: #fff;
+  --text: #2c1a0e;
+  --primary: #c4622d;
+  --secondary: #2d6a4f;
+  --accent: #e8913a;
+  --border: #e8d8c8;
+  --muted: #9e8878;
+  
+  font-family: 'Geist Mono', monospace;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a,
+button {
+  cursor: pointer;
+}
