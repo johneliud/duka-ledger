@@ -5,22 +5,23 @@ import { LoginModal } from "@/components/LoginModal";
 import { RegisterModal } from "@/components/RegisterModal";
 import { JoinModal } from "@/components/JoinModal";
 import { useAuth } from "@/hooks/useAuth";
+import { useNotification } from "@/hooks/useNotification";
 
 type AuthScreen = 'login' | 'register' | 'join';
 
 function App() {
 	const { isAuthenticated, user, shop, login, register, joinShop } = useAuth();
+	const { showSuccess, showError } = useNotification();
 	const [authScreen, setAuthScreen] = useState<AuthScreen>('login');
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string>('');
 
 	const handleLogin = async (name: string, pin: string) => {
 		setIsLoading(true);
-		setError('');
 		try {
 			await login(name, pin);
+			showSuccess('Login successful!');
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Login failed');
+			showError(err instanceof Error ? err.message : 'Login failed');
 		} finally {
 			setIsLoading(false);
 		}
@@ -28,11 +29,11 @@ function App() {
 
 	const handleRegister = async (name: string, pin: string, shopName: string) => {
 		setIsLoading(true);
-		setError('');
 		try {
 			await register(name, pin, shopName);
+			showSuccess('Shop created successfully!');
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Registration failed');
+			showError(err instanceof Error ? err.message : 'Registration failed');
 		} finally {
 			setIsLoading(false);
 		}
@@ -40,11 +41,11 @@ function App() {
 
 	const handleJoin = async (name: string, pin: string, inviteCode: string) => {
 		setIsLoading(true);
-		setError('');
 		try {
 			await joinShop(name, pin, inviteCode);
+			showSuccess('Joined shop successfully!');
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Failed to join shop');
+			showError(err instanceof Error ? err.message : 'Failed to join shop');
 		} finally {
 			setIsLoading(false);
 		}
@@ -59,7 +60,6 @@ function App() {
 						onSwitchToRegister={() => setAuthScreen('register')}
 						onSwitchToJoin={() => setAuthScreen('join')}
 						isLoading={isLoading}
-						error={error}
 					/>
 				)}
 				{authScreen === 'register' && (
@@ -67,7 +67,6 @@ function App() {
 						onRegister={handleRegister}
 						onBack={() => setAuthScreen('login')}
 						isLoading={isLoading}
-						error={error}
 					/>
 				)}
 				{authScreen === 'join' && (
@@ -75,7 +74,6 @@ function App() {
 						onJoin={handleJoin}
 						onBack={() => setAuthScreen('login')}
 						isLoading={isLoading}
-						error={error}
 					/>
 				)}
 			</>

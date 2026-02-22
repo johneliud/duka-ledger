@@ -5,6 +5,7 @@ import App from './App.tsx'
 import { registerSW } from 'virtual:pwa-register'
 import { db } from './db/powersync'
 import { AuthProvider } from './lib/AuthProvider'
+import { NotificationProvider } from './lib/NotificationProvider'
 
 const updateSW = registerSW({
 	onNeedRefresh() {
@@ -31,9 +32,11 @@ function Root() {
 	}, [])
 
 	return (
-		<AuthProvider>
-			<App />
-		</AuthProvider>
+		<NotificationProvider>
+			<AuthProvider>
+				<App />
+			</AuthProvider>
+		</NotificationProvider>
 	)
 }
 
