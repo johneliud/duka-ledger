@@ -36,6 +36,55 @@ app.post("/api/auth/token", (req: Request, res: Response) => {
   res.json({ token });
 });
 
+// Mock auth endpoints for development
+app.post("/api/auth/login", (req: Request, res: Response) => {
+  const { id_number, pin } = req.body;
+  
+  if (!id_number || !pin) {
+    return res.status(400).json({ error: "id_number and pin required" });
+  }
+
+  // TODO: Verify id_number and pin against database
+  res.json({
+    token: jwt.sign({ shop_id: "test-shop", user_id: "test-user" }, JWT_SECRET, { expiresIn: "24h" }),
+    user: { id: "test-user", name: "Test User", id_number },
+    shop: { id: "test-shop", name: "Test Shop" },
+    role: "owner"
+  });
+});
+
+app.post("/api/auth/register", (req: Request, res: Response) => {
+  const { name, id_number, pin, shop_name } = req.body;
+  
+  if (!name || !id_number || !pin || !shop_name) {
+    return res.status(400).json({ error: "name, id_number, pin, and shop_name required" });
+  }
+
+  // TODO: Create user and shop in database
+  res.status(201).json({
+    token: jwt.sign({ shop_id: "new-shop", user_id: "new-user" }, JWT_SECRET, { expiresIn: "24h" }),
+    user: { id: "new-user", name, id_number },
+    shop: { id: "new-shop", name: shop_name },
+    role: "owner"
+  });
+});
+
+app.post("/api/auth/join", (req: Request, res: Response) => {
+  const { name, id_number, pin, invite_code } = req.body;
+  
+  if (!name || !id_number || !pin || !invite_code) {
+    return res.status(400).json({ error: "name, id_number, pin, and invite_code required" });
+  }
+
+  // TODO: Verify invite code and create user
+  res.status(201).json({
+    token: jwt.sign({ shop_id: "joined-shop", user_id: "joined-user" }, JWT_SECRET, { expiresIn: "24h" }),
+    user: { id: "joined-user", name, id_number },
+    shop: { id: "joined-shop", name: "Joined Shop" },
+    role: "member"
+  });
+});
+
 interface SyncOperation {
   type: "INSERT" | "UPDATE" | "DELETE";
   table: string;

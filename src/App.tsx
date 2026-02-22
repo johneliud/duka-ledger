@@ -15,10 +15,10 @@ function App() {
 	const [authScreen, setAuthScreen] = useState<AuthScreen>('login');
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleLogin = async (name: string, pin: string) => {
+	const handleLogin = async (idNumber: string, pin: string) => {
 		setIsLoading(true);
 		try {
-			await login(name, pin);
+			await login(idNumber, pin);
 			showSuccess('Login successful!');
 		} catch (err) {
 			showError(err instanceof Error ? err.message : 'Login failed');
@@ -27,10 +27,10 @@ function App() {
 		}
 	};
 
-	const handleRegister = async (name: string, pin: string, shopName: string) => {
+	const handleRegister = async (name: string, idNumber: string, pin: string, shopName: string) => {
 		setIsLoading(true);
 		try {
-			await register(name, pin, shopName);
+			await register(name, idNumber, pin, shopName);
 			showSuccess('Shop created successfully!');
 		} catch (err) {
 			showError(err instanceof Error ? err.message : 'Registration failed');
@@ -39,10 +39,10 @@ function App() {
 		}
 	};
 
-	const handleJoin = async (name: string, pin: string, inviteCode: string) => {
+	const handleJoin = async (name: string, idNumber: string, pin: string, inviteCode: string) => {
 		setIsLoading(true);
 		try {
-			await joinShop(name, pin, inviteCode);
+			await joinShop(name, idNumber, pin, inviteCode);
 			showSuccess('Joined shop successfully!');
 		} catch (err) {
 			showError(err instanceof Error ? err.message : 'Failed to join shop');
