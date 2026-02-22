@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { registerSW } from 'virtual:pwa-register'
 import { db } from './db/powersync'
-import { AuthProvider } from './hooks/useAuth'
+import { AuthProvider } from './lib/AuthProvider'
 
 const updateSW = registerSW({
 	onNeedRefresh() {
