@@ -75,6 +75,12 @@ export default defineConfig({
 			'@': path.resolve(__dirname, './src')
 		}
 	},
+	worker: {
+		format: 'es'
+	},
+	optimizeDeps: {
+		exclude: ['@powersync/web']
+	},
 	server: {
 		allowedHosts: [
 			'bentlee-flawed-sunshine.ngrok-free.dev'
