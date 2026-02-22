@@ -5,6 +5,7 @@ interface AuthResponse {
 	user: {
 		id: string;
 		name: string;
+		id_number: string;
 	};
 	shop: {
 		id: string;
@@ -13,11 +14,11 @@ interface AuthResponse {
 	role?: string;
 }
 
-export async function login(name: string, pin: string): Promise<AuthResponse> {
+export async function login(idNumber: string, pin: string): Promise<AuthResponse> {
 	const response = await fetch(`${API_URL}/api/auth/login`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ name, pin })
+		body: JSON.stringify({ id_number: idNumber, pin })
 	});
 
 	if (!response.ok) {
@@ -28,11 +29,11 @@ export async function login(name: string, pin: string): Promise<AuthResponse> {
 	return response.json();
 }
 
-export async function register(name: string, pin: string, shopName: string): Promise<AuthResponse> {
+export async function register(name: string, idNumber: string, pin: string, shopName: string): Promise<AuthResponse> {
 	const response = await fetch(`${API_URL}/api/auth/register`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ name, pin, shop_name: shopName })
+		body: JSON.stringify({ name, id_number: idNumber, pin, shop_name: shopName })
 	});
 
 	if (!response.ok) {
@@ -43,11 +44,11 @@ export async function register(name: string, pin: string, shopName: string): Pro
 	return response.json();
 }
 
-export async function joinShop(name: string, pin: string, inviteCode: string): Promise<AuthResponse> {
+export async function joinShop(name: string, idNumber: string, pin: string, inviteCode: string): Promise<AuthResponse> {
 	const response = await fetch(`${API_URL}/api/auth/join`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ name, pin, invite_code: inviteCode })
+		body: JSON.stringify({ name, id_number: idNumber, pin, invite_code: inviteCode })
 	});
 
 	if (!response.ok) {

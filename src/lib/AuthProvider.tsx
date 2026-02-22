@@ -4,7 +4,7 @@ import { login as apiLogin, register as apiRegister, joinShop as apiJoinShop } f
 import { connector } from '@/db/connector';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-	const [user, setUser] = useState<{ id: string; name: string } | null>(null);
+	const [user, setUser] = useState<{ id: string; name: string; id_number: string } | null>(null);
 	const [shop, setShop] = useState<{ id: string; name: string } | null>(null);
 	const [role, setRole] = useState<string | null>(null);
 	const [token, setToken] = useState<string | null>(null);
@@ -14,8 +14,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		// TODO: Add IndexedDB persistence for "Remember this device"
 	}, []);
 
-	const login = async (name: string, pin: string) => {
-		const response = await apiLogin(name, pin);
+	const login = async (idNumber: string, pin: string) => {
+		const response = await apiLogin(idNumber, pin);
 		setUser(response.user);
 		setShop(response.shop);
 		setRole(response.role || 'member');
@@ -24,8 +24,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		connector.setCredentials(response.shop.id, response.user.id);
 	};
 
-	const register = async (name: string, pin: string, shopName: string) => {
-		const response = await apiRegister(name, pin, shopName);
+	const register = async (name: string, idNumber: string, pin: string, shopName: string) => {
+		const response = await apiRegister(name, idNumber, pin, shopName);
 		setUser(response.user);
 		setShop(response.shop);
 		setRole('owner');
@@ -34,8 +34,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		connector.setCredentials(response.shop.id, response.user.id);
 	};
 
-	const joinShop = async (name: string, pin: string, inviteCode: string) => {
-		const response = await apiJoinShop(name, pin, inviteCode);
+	const joinShop = async (name: string, idNumber: string, pin: string, inviteCode: string) => {
+		const response = await apiJoinShop(name, idNumber, pin, inviteCode);
 		setUser(response.user);
 		setShop(response.shop);
 		setRole('member');

@@ -3,6 +3,7 @@ import { createContext } from 'react';
 interface User {
 	id: string;
 	name: string;
+	id_number: string;
 }
 
 interface Shop {
@@ -16,9 +17,9 @@ export interface AuthContextType {
 	role: string | null;
 	token: string | null;
 	isAuthenticated: boolean;
-	login: (name: string, pin: string) => Promise<void>;
-	register: (name: string, pin: string, shopName: string) => Promise<void>;
-	joinShop: (name: string, pin: string, inviteCode: string) => Promise<void>;
+	login: (idNumber: string, pin: string) => Promise<void>;
+	register: (name: string, idNumber: string, pin: string, shopName: string) => Promise<void>;
+	joinShop: (name: string, idNumber: string, pin: string, inviteCode: string) => Promise<void>;
 	logout: () => void;
 }
 
