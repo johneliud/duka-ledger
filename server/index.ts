@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import { Pool } from "pg";
@@ -10,7 +10,7 @@ const app = express();
 const PORT = 3001;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-if (JWT_SECRET === undefined || !JWT_SECRET) {
+if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined");
 }
 
@@ -21,11 +21,11 @@ const pool = new Pool({
 app.use(cors());
 app.use(express.json());
 
-app.get("/health", (req, res) => {
+app.get("/health", (_req: Request, res: Response) => {
   res.json({ status: "ok" });
 });
 
-app.post("/api/auth/token", (req, res) => {
+app.post("/api/auth/token", (req: Request, res: Response) => {
   const { shop_id, user_id } = req.body;
 
   if (!shop_id || !user_id) {
@@ -36,8 +36,14 @@ app.post("/api/auth/token", (req, res) => {
   res.json({ token });
 });
 
-app.post("/api/sync/upload", async (req, res) => {
-  const { operations } = req.body;
+interface SyncOperation {
+  type: "INSERT" | "UPDATE" | "DELETE";
+  table: string;
+  data: Record<string, unknown>;
+}
+
+app.post("/api/sync/upload", async (req: Request, res: Response) => {
+  const { operations } = req.body as { operations: SyncOperation[] };
 
   if (!operations || !Array.isArray(operations)) {
     return res.status(400).json({ error: "operations array required" });
