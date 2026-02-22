@@ -1,21 +1,22 @@
 import { useState } from 'react';
 
 interface RegisterModalProps {
-	onRegister: (name: string, pin: string, shopName: string) => void;
+	onRegister: (name: string, idNumber: string, pin: string, shopName: string) => void;
 	onBack: () => void;
 	isLoading?: boolean;
 }
 
 export function RegisterModal({ onRegister, onBack, isLoading }: RegisterModalProps) {
 	const [name, setName] = useState('');
+	const [idNumber, setIdNumber] = useState('');
 	const [pin, setPin] = useState('');
 	const [confirmPin, setConfirmPin] = useState('');
 	const [shopName, setShopName] = useState('');
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (name && pin.length === 4 && pin === confirmPin && shopName) {
-			onRegister(name, pin, shopName);
+		if (name && idNumber && pin.length === 4 && pin === confirmPin && shopName) {
+			onRegister(name, idNumber, pin, shopName);
 		}
 	};
 
@@ -33,6 +34,19 @@ export function RegisterModal({ onRegister, onBack, isLoading }: RegisterModalPr
 							onChange={(e) => setName(e.target.value)}
 							className="w-full px-3 py-2 border border-border rounded-lg bg-bg text-text"
 							placeholder="e.g. Mama Wanjiku"
+							required
+						/>
+					</div>
+
+					<div className="mb-4">
+						<label className="block text-text text-sm mb-2">ID Number</label>
+						<input
+							type="text"
+							inputMode="numeric"
+							value={idNumber}
+							onChange={(e) => setIdNumber(e.target.value.replace(/\D/g, ''))}
+							className="w-full px-3 py-2 border border-border rounded-lg bg-bg text-text"
+							placeholder="12345678"
 							required
 						/>
 					</div>
@@ -82,7 +96,7 @@ export function RegisterModal({ onRegister, onBack, isLoading }: RegisterModalPr
 
 					<button
 						type="submit"
-						disabled={isLoading || !name || !shopName || pin.length !== 4 || pin !== confirmPin}
+						disabled={isLoading || !name || !idNumber || !shopName || pin.length !== 4 || pin !== confirmPin}
 						className="w-full py-3 bg-primary text-bg rounded-lg font-bold disabled:opacity-50 mb-3"
 					>
 						{isLoading ? 'Creating...' : 'Create Shop'}

@@ -1,20 +1,21 @@
 import { useState } from 'react';
 
 interface JoinModalProps {
-	onJoin: (name: string, pin: string, inviteCode: string) => void;
+	onJoin: (name: string, idNumber: string, pin: string, inviteCode: string) => void;
 	onBack: () => void;
 	isLoading?: boolean;
 }
 
 export function JoinModal({ onJoin, onBack, isLoading }: JoinModalProps) {
 	const [name, setName] = useState('');
+	const [idNumber, setIdNumber] = useState('');
 	const [pin, setPin] = useState('');
 	const [inviteCode, setInviteCode] = useState('');
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (name && pin.length === 4 && inviteCode) {
-			onJoin(name, pin, inviteCode);
+		if (name && idNumber && pin.length === 4 && inviteCode) {
+			onJoin(name, idNumber, pin, inviteCode);
 		}
 	};
 
@@ -32,6 +33,19 @@ export function JoinModal({ onJoin, onBack, isLoading }: JoinModalProps) {
 							onChange={(e) => setName(e.target.value)}
 							className="w-full px-3 py-2 border border-border rounded-lg bg-bg text-text"
 							placeholder="Your name"
+							required
+						/>
+					</div>
+
+					<div className="mb-4">
+						<label className="block text-text text-sm mb-2">ID Number</label>
+						<input
+							type="text"
+							inputMode="numeric"
+							value={idNumber}
+							onChange={(e) => setIdNumber(e.target.value.replace(/\D/g, ''))}
+							className="w-full px-3 py-2 border border-border rounded-lg bg-bg text-text"
+							placeholder="12345678"
 							required
 						/>
 					</div>
@@ -64,7 +78,7 @@ export function JoinModal({ onJoin, onBack, isLoading }: JoinModalProps) {
 
 					<button
 						type="submit"
-						disabled={isLoading || !name || pin.length !== 4 || !inviteCode}
+						disabled={isLoading || !name || !idNumber || pin.length !== 4 || !inviteCode}
 						className="w-full py-3 bg-primary text-bg rounded-lg font-bold disabled:opacity-50 mb-3"
 					>
 						{isLoading ? 'Joining...' : 'Join Shop'}

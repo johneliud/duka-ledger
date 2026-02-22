@@ -1,20 +1,20 @@
 import { useState } from 'react';
 
 interface LoginModalProps {
-	onLogin: (name: string, pin: string) => void;
+	onLogin: (idNumber: string, pin: string) => void;
 	onSwitchToRegister: () => void;
 	onSwitchToJoin: () => void;
 	isLoading?: boolean;
 }
 
 export function LoginModal({ onLogin, onSwitchToRegister, onSwitchToJoin, isLoading }: LoginModalProps) {
-	const [name, setName] = useState('');
+	const [idNumber, setIdNumber] = useState('');
 	const [pin, setPin] = useState('');
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (name && pin.length === 4) {
-			onLogin(name, pin);
+		if (idNumber && pin.length === 4) {
+			onLogin(idNumber, pin);
 		}
 	};
 
@@ -25,13 +25,14 @@ export function LoginModal({ onLogin, onSwitchToRegister, onSwitchToJoin, isLoad
 				
 				<form onSubmit={handleSubmit}>
 					<div className="mb-4">
-						<label className="block text-text text-sm mb-2">Name</label>
+						<label className="block text-text text-sm mb-2">ID Number</label>
 						<input
 							type="text"
-							value={name}
-							onChange={(e) => setName(e.target.value)}
+							inputMode="numeric"
+							value={idNumber}
+							onChange={(e) => setIdNumber(e.target.value.replace(/\D/g, ''))}
 							className="w-full px-3 py-2 border border-border rounded-lg bg-bg text-text"
-							placeholder="Your name"
+							placeholder="12345678"
 							required
 						/>
 					</div>
@@ -52,7 +53,7 @@ export function LoginModal({ onLogin, onSwitchToRegister, onSwitchToJoin, isLoad
 
 					<button
 						type="submit"
-						disabled={isLoading || !name || pin.length !== 4}
+						disabled={isLoading || !idNumber || pin.length !== 4}
 						className="w-full py-3 bg-primary text-bg rounded-lg font-bold disabled:opacity-50"
 					>
 						{isLoading ? 'Logging in...' : 'Login'}
