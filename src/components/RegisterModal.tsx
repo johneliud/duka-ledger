@@ -4,10 +4,9 @@ interface RegisterModalProps {
 	onRegister: (name: string, pin: string, shopName: string) => void;
 	onBack: () => void;
 	isLoading?: boolean;
-	error?: string;
 }
 
-export function RegisterModal({ onRegister, onBack, isLoading, error }: RegisterModalProps) {
+export function RegisterModal({ onRegister, onBack, isLoading }: RegisterModalProps) {
 	const [name, setName] = useState('');
 	const [pin, setPin] = useState('');
 	const [confirmPin, setConfirmPin] = useState('');
@@ -80,12 +79,6 @@ export function RegisterModal({ onRegister, onBack, isLoading, error }: Register
 							<p className="text-red-600 text-xs mt-1">PINs do not match</p>
 						)}
 					</div>
-
-					{error && (
-						<div className="p-3 bg-red-50 text-red-600 rounded-lg mb-4 text-sm">
-							{error}
-						</div>
-					)}
 
 					<button
 						type="submit"

@@ -4,10 +4,9 @@ interface JoinModalProps {
 	onJoin: (name: string, pin: string, inviteCode: string) => void;
 	onBack: () => void;
 	isLoading?: boolean;
-	error?: string;
 }
 
-export function JoinModal({ onJoin, onBack, isLoading, error }: JoinModalProps) {
+export function JoinModal({ onJoin, onBack, isLoading }: JoinModalProps) {
 	const [name, setName] = useState('');
 	const [pin, setPin] = useState('');
 	const [inviteCode, setInviteCode] = useState('');
@@ -62,12 +61,6 @@ export function JoinModal({ onJoin, onBack, isLoading, error }: JoinModalProps) 
 							required
 						/>
 					</div>
-
-					{error && (
-						<div className="p-3 bg-red-50 text-red-600 rounded-lg mb-4 text-sm">
-							{error}
-						</div>
-					)}
 
 					<button
 						type="submit"

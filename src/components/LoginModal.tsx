@@ -5,10 +5,9 @@ interface LoginModalProps {
 	onSwitchToRegister: () => void;
 	onSwitchToJoin: () => void;
 	isLoading?: boolean;
-	error?: string;
 }
 
-export function LoginModal({ onLogin, onSwitchToRegister, onSwitchToJoin, isLoading, error }: LoginModalProps) {
+export function LoginModal({ onLogin, onSwitchToRegister, onSwitchToJoin, isLoading }: LoginModalProps) {
 	const [name, setName] = useState('');
 	const [pin, setPin] = useState('');
 
@@ -50,12 +49,6 @@ export function LoginModal({ onLogin, onSwitchToRegister, onSwitchToJoin, isLoad
 							required
 						/>
 					</div>
-
-					{error && (
-						<div className="p-3 bg-red-50 text-red-600 rounded-lg mb-4 text-sm">
-							{error}
-						</div>
-					)}
 
 					<button
 						type="submit"
