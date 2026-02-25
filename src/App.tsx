@@ -8,6 +8,7 @@ import { LoginModal } from "@/components/LoginModal";
 import { RegisterModal } from "@/components/RegisterModal";
 import { JoinModal } from "@/components/JoinModal";
 import { StorageWarning } from "@/components/StorageWarning";
+import { OnboardingTour } from "@/components/OnboardingTour";
 import { Dashboard } from "@/pages/Dashboard";
 import { RecordSale } from "@/pages/RecordSale";
 import { SalesHistory } from "@/pages/SalesHistory";
@@ -93,6 +94,7 @@ function App() {
 		<ErrorBoundary>
 			<BrowserRouter>
 				<Header />
+				{isAuthenticated && <OnboardingTour />}
 				{isAuthenticated && storageInfo?.isWarning && (
 					<StorageWarning
 						percentUsed={storageInfo.percentUsed}

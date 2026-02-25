@@ -9,12 +9,12 @@ const DEMO_USER_ID = 'demo-user-001';
 
 const products = [
 	{ name: 'Unga wa Sembe 2kg', price: 150, stock: 45 },
-	{ name: 'Sugar 1kg', price: 180, stock: 30 },
+	{ name: 'Sugar 1kg', price: 180, stock: 3 },  // Low stock
 	{ name: 'Rice 2kg', price: 220, stock: 25 },
-	{ name: 'Cooking Oil 1L', price: 350, stock: 15 },
+	{ name: 'Cooking Oil 1L', price: 350, stock: 2 },  // Low stock
 	{ name: 'Soap Bar', price: 50, stock: 60 },
-	{ name: 'Matches Box', price: 10, stock: 100 },
-	{ name: 'Milk 500ml', price: 70, stock: 20 },
+	{ name: 'Matches Box', price: 10, stock: 1 },  // Low stock
+	{ name: 'Milk 500ml', price: 70, stock: 4 },  // Low stock
 	{ name: 'Airtime KSh 100', price: 100, stock: 50 },
 ];
 
