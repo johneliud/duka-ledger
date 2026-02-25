@@ -4,13 +4,17 @@ import bcrypt from "bcrypt";
 import { pool } from "../db.ts";
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET!;
 
 router.post("/token", (req: Request, res: Response) => {
   const { shop_id, user_id } = req.body;
 
   if (!shop_id || !user_id) {
     return res.status(400).json({ error: "shop_id and user_id required" });
+  }
+
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    return res.status(500).json({ error: "JWT_SECRET not configured" });
   }
 
   const token = jwt.sign({ shop_id, user_id }, JWT_SECRET, { expiresIn: "7d" });
@@ -22,6 +26,11 @@ router.post("/login", async (req: Request, res: Response) => {
   
   if (!id_number || !pin) {
     return res.status(400).json({ error: "id_number and pin required" });
+  }
+
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    return res.status(500).json({ error: "JWT_SECRET not configured" });
   }
 
   try {
@@ -83,6 +92,11 @@ router.post("/register", async (req: Request, res: Response) => {
 
   if (pin.length !== 4 || !/^\d+$/.test(pin)) {
     return res.status(400).json({ error: "PIN must be 4 digits" });
+  }
+
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    return res.status(500).json({ error: "JWT_SECRET not configured" });
   }
 
   try {
@@ -148,6 +162,11 @@ router.post("/join", async (req: Request, res: Response) => {
 
   if (pin.length !== 4 || !/^\d+$/.test(pin)) {
     return res.status(400).json({ error: "PIN must be 4 digits" });
+  }
+
+  const JWT_SECRET = process.env.JWT_SECRET;
+  if (!JWT_SECRET) {
+    return res.status(500).json({ error: "JWT_SECRET not configured" });
   }
 
   try {
