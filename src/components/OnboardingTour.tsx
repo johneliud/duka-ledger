@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Joyride, { type CallBackProps, STATUS } from 'react-joyride';
-import { tourSteps } from '../lib/tourSteps';
+import { getTourSteps } from '../lib/tourSteps';
 import { useAuth } from '../hooks/useAuth';
 
 export function OnboardingTour() {
@@ -28,7 +28,7 @@ export function OnboardingTour() {
 
   return (
     <Joyride
-      steps={tourSteps}
+      steps={getTourSteps()}
       run={run}
       continuous
       showProgress
