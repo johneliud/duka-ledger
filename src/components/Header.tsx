@@ -12,9 +12,10 @@ export function Header() {
 	const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
 	const navLinks = [
-		{ name: 'Products', path: '/products' },
+		{ name: 'Dashboard', path: '/' },
 		{ name: 'Record Sale', path: '/record-sale' },
 		{ name: 'Sales History', path: '/sales-history' },
+		{ name: 'Products', path: '/products' },
 		{ name: 'Expenses', path: '/expenses' },
 		{ name: 'Debt Book', path: '/debt-book' },
 	];
