@@ -29,11 +29,6 @@ function App() {
 	const [authScreen, setAuthScreen] = useState<AuthScreen>('landing');
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleExport = () => {
-		window.location.href = '/analytics';
-		showSuccess('Navigate to Analytics to export data');
-	};
-
 	const handleLogin = async (idNumber: string, pin: string) => {
 		setIsLoading(true);
 		try {
@@ -78,7 +73,6 @@ function App() {
 				<StorageWarning
 					percentUsed={storageInfo.percentUsed}
 					isCritical={storageInfo.isCritical}
-					onExport={handleExport}
 				/>
 			)}
 			{!isAuthenticated ? (
