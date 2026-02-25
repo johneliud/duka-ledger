@@ -1,8 +1,35 @@
 import { db } from '@/db/powersync';
 import jsPDF from 'jspdf';
 
+interface Sale {
+	id: string;
+	product_id: string;
+	quantity: number;
+	total: number;
+	payment_method: string;
+	created_at: string;
+}
+
+interface Expense {
+	id: string;
+	category: string;
+	amount: number;
+	note: string;
+	created_at: string;
+}
+
+interface Debt {
+	id: string;
+	customer_name: string;
+	phone: string;
+	amount_owed: number;
+	amount_paid: number;
+	status: string;
+	updated_at: string;
+}
+
 export async function exportSalesToCSV() {
-	const sales = await db.getAll('SELECT * FROM sales ORDER BY created_at DESC');
+	const sales = await db.getAll<Sale>('SELECT * FROM sales ORDER BY created_at DESC');
 	const headers = ['ID', 'Product ID', 'Quantity', 'Total', 'Payment Method', 'Created At'];
 	const rows = sales.map(s => [s.id, s.product_id, s.quantity, s.total, s.payment_method, s.created_at]);
 	
@@ -11,7 +38,7 @@ export async function exportSalesToCSV() {
 }
 
 export async function exportExpensesToCSV() {
-	const expenses = await db.getAll('SELECT * FROM expenses ORDER BY created_at DESC');
+	const expenses = await db.getAll<Expense>('SELECT * FROM expenses ORDER BY created_at DESC');
 	const headers = ['ID', 'Category', 'Amount', 'Note', 'Created At'];
 	const rows = expenses.map(e => [e.id, e.category, e.amount, e.note || '', e.created_at]);
 	
@@ -20,7 +47,7 @@ export async function exportExpensesToCSV() {
 }
 
 export async function exportDebtsToCSV() {
-	const debts = await db.getAll('SELECT * FROM debts ORDER BY updated_at DESC');
+	const debts = await db.getAll<Debt>('SELECT * FROM debts ORDER BY updated_at DESC');
 	const headers = ['ID', 'Customer Name', 'Phone', 'Amount Owed', 'Amount Paid', 'Status', 'Updated At'];
 	const rows = debts.map(d => [d.id, d.customer_name, d.phone || '', d.amount_owed, d.amount_paid, d.status, d.updated_at]);
 	
@@ -29,7 +56,7 @@ export async function exportDebtsToCSV() {
 }
 
 export async function exportSalesToPDF() {
-	const sales = await db.getAll('SELECT * FROM sales ORDER BY created_at DESC LIMIT 50');
+	const sales = await db.getAll<Sale>('SELECT * FROM sales ORDER BY created_at DESC LIMIT 50');
 	const doc = new jsPDF();
 	
 	doc.setFontSize(16);
@@ -51,7 +78,7 @@ export async function exportSalesToPDF() {
 }
 
 export async function exportExpensesToPDF() {
-	const expenses = await db.getAll('SELECT * FROM expenses ORDER BY created_at DESC LIMIT 50');
+	const expenses = await db.getAll<Expense>('SELECT * FROM expenses ORDER BY created_at DESC LIMIT 50');
 	const doc = new jsPDF();
 	
 	doc.setFontSize(16);
@@ -73,7 +100,7 @@ export async function exportExpensesToPDF() {
 }
 
 export async function exportDebtsToPDF() {
-	const debts = await db.getAll('SELECT * FROM debts ORDER BY updated_at DESC');
+	const debts = await db.getAll<Debt>('SELECT * FROM debts ORDER BY updated_at DESC');
 	const doc = new jsPDF();
 	
 	doc.setFontSize(16);
