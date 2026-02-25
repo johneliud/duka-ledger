@@ -212,6 +212,9 @@ export function DebtBook() {
 									{debts.map(debt => {
 										const remaining = debt.amount_owed - debt.amount_paid;
 										const days = getDaysOverdue(debt.updated_at);
+										const createdDate = new Date(debt.updated_at).toLocaleDateString();
+										const isRecent = Date.now() - new Date(debt.updated_at).getTime() < 24 * 60 * 60 * 1000;
+										
 										return (
 											<button
 												key={debt.id}
@@ -235,13 +238,31 @@ export function DebtBook() {
 														{debt.status}
 													</div>
 												</div>
-												<div className="flex justify-between items-end mt-3">
-													<div>
-														{days > 0 && debt.status !== 'cleared' && (
-															<div className="text-xs text-accent">
-																{days} days overdue
-															</div>
-														)}
+												
+												<div className="text-xs text-muted mt-2 space-y-1">
+													{debt.status === 'cleared' ? (
+														<>
+															<div>Created: {createdDate}</div>
+															<div className="text-secondary font-medium">Cleared: {createdDate}</div>
+														</>
+													) : (
+														<>
+															<div>Created: {createdDate}</div>
+															{days > 0 && (
+																<div className="text-accent font-medium">
+																	{days} days overdue
+																</div>
+															)}
+															{isRecent && days === 0 && (
+																<div className="text-secondary">Recent</div>
+															)}
+														</>
+													)}
+												</div>
+												
+												<div className="flex justify-between items-end mt-3 pt-2 border-t border-border">
+													<div className="text-xs text-muted">
+														{debt.status === 'partial' && `Paid: KSh ${debt.amount_paid.toLocaleString()}`}
 													</div>
 													<div className="text-lg font-bold text-text">
 														KSh {remaining.toLocaleString()}
