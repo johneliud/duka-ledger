@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import authRoutes from "./routes/auth.ts";
 import syncRoutes from "./routes/sync.ts";
 
-dotenv.config({ path: ".env.local" });
+if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD) {
+  throw new Error("Database connection details are not defined");
+}
 
 const app = express();
 const PORT = 3001;
