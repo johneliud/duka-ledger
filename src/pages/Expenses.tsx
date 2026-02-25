@@ -54,10 +54,12 @@ export function Expenses() {
 	const todayTotal = expenses.reduce((sum, exp) => sum + exp.amount, 0);
 
 	return (
-		<div className="max-w-md mx-auto p-4">
+		<div className="container mx-auto px-4 lg:px-0 py-6">
 			<h1 className="text-2xl font-bold text-text mb-6">Record Expense</h1>
 
-			<div className="space-y-4">
+			<div className="grid lg:grid-cols-3 gap-6">
+				{/* Left Panel - Expense Form */}
+				<div className="lg:col-span-2 space-y-4">
 				<div>
 					<label className="block text-sm font-medium text-text mb-2">Category</label>
 					<div className="grid grid-cols-3 gap-2">
@@ -118,19 +120,43 @@ export function Expenses() {
 				</button>
 			</div>
 
-			<div className="mt-8">
-				<h2 className="text-lg font-bold text-text mb-4">Today's Expenses</h2>
-				
-				{expenses.length === 0 ? (
-					<div className="text-center py-8 text-muted">No expenses recorded today</div>
-				) : (
-					<>
-						<div className="bg-surface border border-border rounded p-4 mb-4">
-							<div className="text-sm text-muted">Total today</div>
-							<div className="text-2xl font-bold text-primary">
-								KSh {todayTotal.toLocaleString()}
-							</div>
-						</div>
+			{/* Right Panel - Today's Expenses & Summary */}
+			<div className="space-y-4">
+				<div className="bg-surface border border-border rounded p-4">
+					<h2 className="text-lg font-bold text-text mb-4">Today's Total</h2>
+					<div className="text-3xl font-bold text-primary">
+						KSh {todayTotal.toLocaleString()}
+					</div>
+				</div>
+
+				<div className="bg-surface border border-border rounded p-4">
+					<h2 className="text-lg font-bold text-text mb-4">By Category</h2>
+					<div className="space-y-2">
+						{categories.map(cat => {
+							const catTotal = expenses
+								.filter(e => e.category === cat.value)
+								.reduce((sum, e) => sum + e.amount, 0);
+							const Icon = cat.icon;
+							return (
+								<div key={cat.value} className="flex justify-between items-center">
+									<div className="flex items-center gap-2">
+										<Icon size={16} className="text-primary" />
+										<span className="text-sm text-muted">{cat.label}</span>
+									</div>
+									<span className="font-medium text-text">
+										KSh {catTotal.toLocaleString()}
+									</span>
+								</div>
+							);
+						})}
+					</div>
+				</div>
+
+				<div className="bg-surface border border-border rounded p-4">
+					<h2 className="text-lg font-bold text-text mb-4">Today's Expenses</h2>
+					{expenses.length === 0 ? (
+						<p className="text-center text-muted py-4">No expenses recorded today</p>
+					) : (
 						<div className="space-y-2">
 							{expenses.map(exp => {
 								const cat = categories.find(c => c.value === exp.category);
@@ -138,30 +164,31 @@ export function Expenses() {
 								return (
 									<div
 										key={exp.id}
-										className="bg-surface border border-border rounded p-3 flex items-center justify-between"
+										className="flex items-center justify-between py-2 border-b border-border last:border-0"
 									>
-										<div className="flex items-center gap-3">
+										<div className="flex items-center gap-3 flex-1">
 											<div className="p-2 bg-bg rounded">
-												<Icon size={20} className="text-primary" />
+												<Icon size={18} className="text-primary" />
 											</div>
-											<div>
-												<div className="font-medium text-text capitalize">{exp.category}</div>
-												{exp.note && <div className="text-sm text-muted">{exp.note}</div>}
+											<div className="flex-1">
+												<div className="text-sm font-medium text-text capitalize">{exp.category}</div>
+												{exp.note && <div className="text-xs text-muted truncate">{exp.note}</div>}
 												<div className="text-xs text-muted">
 													{new Date(exp.created_at).toLocaleTimeString()}
 												</div>
 											</div>
 										</div>
-										<div className="text-lg font-bold text-text">
+										<div className="text-sm font-bold text-text">
 											KSh {exp.amount.toLocaleString()}
 										</div>
 									</div>
 								);
 							})}
 						</div>
-					</>
-				)}
+					)}
+				</div>
 			</div>
+		</div>
 		</div>
 	);
 }

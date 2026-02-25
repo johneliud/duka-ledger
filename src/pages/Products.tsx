@@ -76,7 +76,7 @@ export function Products() {
 	};
 
 	return (
-		<div className="max-w-2xl mx-auto p-4">
+		<div className="container mx-auto px-4 lg:px-0 py-6">
 			<div className="flex items-center justify-between mb-6">
 				<h1 className="text-2xl font-bold text-text">Products</h1>
 				<button
@@ -89,40 +89,46 @@ export function Products() {
 			</div>
 
 			{products.length === 0 ? (
-				<div className="text-center py-12 text-muted">
+				<div className="text-center py-12 text-muted bg-surface border border-border rounded">
 					No products yet. Add your first product to start selling.
 				</div>
 			) : (
-				<div className="grid gap-3">
+				<div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 					{products.map(product => (
 						<div
 							key={product.id}
-							className="bg-surface border border-border rounded p-4"
+							className="bg-surface border border-border rounded p-4 hover:shadow-md transition-shadow"
 						>
-							<div className="flex items-start justify-between">
-								<div className="flex-1">
-									<h3 className="font-medium text-text">{product.name}</h3>
-									<div className="text-sm text-muted mt-1">
-										KSh {product.price.toLocaleString()}
-									</div>
-									<div className={`text-sm mt-1 ${product.stock_count < 5 ? 'text-accent font-medium' : 'text-muted'}`}>
-										{product.stock_count < 5 && <AlertTriangle size={14} className="inline mr-1" />}
-										Stock: {product.stock_count}
-									</div>
-								</div>
-								<div className="flex gap-2">
+							<div className="flex items-start justify-between mb-3">
+								<h3 className="font-medium text-text flex-1">{product.name}</h3>
+								<div className="flex gap-1">
 									<button
 										onClick={() => handleEdit(product)}
-										className="p-2 text-muted hover:text-primary"
+										className="p-1.5 text-muted hover:text-primary hover:bg-bg rounded"
 									>
-										<Edit2 size={18} />
+										<Edit2 size={16} />
 									</button>
 									<button
 										onClick={() => setDeleteId(product.id)}
-										className="p-2 text-muted hover:text-primary"
+										className="p-1.5 text-muted hover:text-primary hover:bg-bg rounded"
 									>
-										<Trash2 size={18} />
+										<Trash2 size={16} />
 									</button>
+								</div>
+							</div>
+							<div className="space-y-2">
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted">Price</span>
+									<span className="text-lg font-bold text-primary">
+										KSh {product.price.toLocaleString()}
+									</span>
+								</div>
+								<div className="flex justify-between items-center">
+									<span className="text-sm text-muted">Stock</span>
+									<span className={`font-medium ${product.stock_count < 5 ? 'text-accent' : 'text-text'}`}>
+										{product.stock_count < 5 && <AlertTriangle size={14} className="inline mr-1" />}
+										{product.stock_count} units
+									</span>
 								</div>
 							</div>
 						</div>

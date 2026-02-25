@@ -103,9 +103,9 @@ export function DebtBook() {
 	const totalOwed = debts.reduce((sum, d) => sum + (d.amount_owed - d.amount_paid), 0);
 
 	return (
-		<div className="max-w-2xl mx-auto p-4">
+		<div className="container mx-auto px-4 lg:px-0 py-6">
 			{selectedDebt ? (
-				<div>
+				<div className="max-w-2xl">
 					<button
 						onClick={() => setSelectedDebt(null)}
 						className="flex items-center gap-2 text-muted hover:text-text mb-4"
@@ -182,72 +182,161 @@ export function DebtBook() {
 						</button>
 					</div>
 
-					<div className="bg-surface border border-border rounded p-4 mb-4">
-						<div className="text-sm text-muted">Total Pending Debt</div>
-						<div className="text-2xl font-bold text-primary">KSh {totalOwed.toLocaleString()}</div>
-					</div>
-
-					<div className="flex gap-2 mb-4">
-						<button
-							onClick={() => setFilter(undefined)}
-							className={`px-4 py-2 rounded ${!filter ? 'bg-primary text-white' : 'bg-surface border border-border text-text'}`}
-						>
-							All
-						</button>
-						{(['pending', 'partial', 'cleared'] as DebtStatus[]).map(s => (
-							<button
-								key={s}
-								onClick={() => setFilter(s)}
-								className={`px-4 py-2 rounded capitalize ${filter === s ? 'bg-primary text-white' : 'bg-surface border border-border text-text'}`}
-							>
-								{s}
-							</button>
-						))}
-					</div>
-
-					{debts.length === 0 ? (
-						<div className="text-center py-12 text-muted">No debts recorded</div>
-					) : (
-						<div className="space-y-2">
-							{debts.map(debt => {
-								const remaining = debt.amount_owed - debt.amount_paid;
-								const days = getDaysOverdue(debt.updated_at);
-								return (
+					<div className="grid lg:grid-cols-3 gap-6">
+						{/* Left Panel - Debt List */}
+						<div className="lg:col-span-2 space-y-4">
+							<div className="flex gap-2">
+								<button
+									onClick={() => setFilter(undefined)}
+									className={`px-4 py-2 rounded ${!filter ? 'bg-primary text-white' : 'bg-surface border border-border text-text'}`}
+								>
+									All
+								</button>
+								{(['pending', 'partial', 'cleared'] as DebtStatus[]).map(s => (
 									<button
-										key={debt.id}
-										onClick={() => setSelectedDebt(debt.id)}
-										className="w-full bg-surface border border-border rounded p-4 text-left hover:bg-bg"
+										key={s}
+										onClick={() => setFilter(s)}
+										className={`px-4 py-2 rounded capitalize ${filter === s ? 'bg-primary text-white' : 'bg-surface border border-border text-text'}`}
 									>
-										<div className="flex items-start justify-between">
-											<div className="flex-1">
-												<div className="font-medium text-text">{debt.customer_name}</div>
-												{debt.phone && (
-													<div className="text-sm text-muted flex items-center gap-1 mt-1">
-														<Phone size={14} />
-														{debt.phone}
-													</div>
-												)}
-												<div className="text-xs text-muted mt-1">
-													{days > 0 && `${days} days overdue`}
-												</div>
-											</div>
-											<div className="text-right">
-												<div className="text-lg font-bold text-text">
-													KSh {remaining.toLocaleString()}
-												</div>
-												<div className={`text-xs font-medium ${
-													debt.status === 'cleared' ? 'text-secondary' :
-													debt.status === 'partial' ? 'text-accent' : 'text-primary'
-												}`}>
-													{debt.status}
-												</div>
-											</div>
-										</div>
+										{s}
 									</button>
-								);
-							})}
+								))}
+							</div>
+
+							{debts.length === 0 ? (
+								<div className="text-center py-12 text-muted bg-surface border border-border rounded">
+									No debts recorded
+								</div>
+							) : (
+								<div className="grid sm:grid-cols-2 gap-3">
+									{debts.map(debt => {
+										const remaining = debt.amount_owed - debt.amount_paid;
+										const days = getDaysOverdue(debt.updated_at);
+										const createdDate = new Date(debt.updated_at).toLocaleDateString();
+										const isRecent = Date.now() - new Date(debt.updated_at).getTime() < 24 * 60 * 60 * 1000;
+										
+										return (
+											<button
+												key={debt.id}
+												onClick={() => setSelectedDebt(debt.id)}
+												className="bg-surface border border-border rounded p-4 text-left hover:shadow-md transition-shadow"
+											>
+												<div className="flex items-start justify-between mb-2">
+													<div className="flex-1">
+														<div className="font-medium text-text">{debt.customer_name}</div>
+														{debt.phone && (
+															<div className="text-xs text-muted flex items-center gap-1 mt-1">
+																<Phone size={12} />
+																{debt.phone}
+															</div>
+														)}
+													</div>
+													<div className={`text-xs font-medium px-2 py-1 rounded ${
+														debt.status === 'cleared' ? 'bg-secondary/10 text-secondary' :
+														debt.status === 'partial' ? 'bg-accent/10 text-accent' : 'bg-primary/10 text-primary'
+													}`}>
+														{debt.status}
+													</div>
+												</div>
+												
+												<div className="text-xs text-muted mt-2 space-y-1">
+													{debt.status === 'cleared' ? (
+														<>
+															<div>Created: {createdDate}</div>
+															<div className="text-secondary font-medium">Cleared: {createdDate}</div>
+														</>
+													) : (
+														<>
+															<div>Created: {createdDate}</div>
+															{days > 0 && (
+																<div className="text-accent font-medium">
+																	{days} days overdue
+																</div>
+															)}
+															{isRecent && days === 0 && (
+																<div className="text-secondary">Recent</div>
+															)}
+														</>
+													)}
+												</div>
+												
+												<div className="flex justify-between items-end mt-3 pt-2 border-t border-border">
+													<div className="text-xs text-muted">
+														{debt.status === 'partial' && `Paid: KSh ${debt.amount_paid.toLocaleString()}`}
+													</div>
+													<div className="text-lg font-bold text-text">
+														KSh {remaining.toLocaleString()}
+													</div>
+												</div>
+											</button>
+										);
+									})}
+								</div>
+							)}
 						</div>
-					)}
+
+						{/* Right Panel - Summary */}
+						<div className="space-y-4">
+							<div className="bg-surface border border-border rounded p-4">
+								<div className="text-sm text-muted mb-1">Total Pending Debt</div>
+								<div className="text-3xl font-bold text-primary">
+									KSh {totalOwed.toLocaleString()}
+								</div>
+							</div>
+
+							<div className="bg-surface border border-border rounded p-4">
+								<h3 className="font-medium text-text mb-3">Summary</h3>
+								<div className="space-y-2">
+									<div className="flex justify-between">
+										<span className="text-sm text-muted">Total Customers</span>
+										<span className="font-medium text-text">{debts.length}</span>
+									</div>
+									<div className="flex justify-between">
+										<span className="text-sm text-muted">Pending</span>
+										<span className="font-medium text-primary">
+											{debts.filter(d => d.status === 'pending').length}
+										</span>
+									</div>
+									<div className="flex justify-between">
+										<span className="text-sm text-muted">Partial</span>
+										<span className="font-medium text-accent">
+											{debts.filter(d => d.status === 'partial').length}
+										</span>
+									</div>
+									<div className="flex justify-between">
+										<span className="text-sm text-muted">Cleared</span>
+										<span className="font-medium text-secondary">
+											{debts.filter(d => d.status === 'cleared').length}
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div className="bg-surface border border-border rounded p-4">
+								<h3 className="font-medium text-text mb-3">Amount Breakdown</h3>
+								<div className="space-y-2">
+									<div className="flex justify-between">
+										<span className="text-sm text-muted">Total Owed</span>
+										<span className="font-medium text-text">
+											KSh {debts.reduce((sum, d) => sum + d.amount_owed, 0).toLocaleString()}
+										</span>
+									</div>
+									<div className="flex justify-between">
+										<span className="text-sm text-muted">Total Paid</span>
+										<span className="font-medium text-secondary">
+											KSh {debts.reduce((sum, d) => sum + d.amount_paid, 0).toLocaleString()}
+										</span>
+									</div>
+									<div className="flex justify-between pt-2 border-t border-border">
+										<span className="text-sm font-medium text-text">Remaining</span>
+										<span className="font-bold text-primary">
+											KSh {totalOwed.toLocaleString()}
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			)}
 
