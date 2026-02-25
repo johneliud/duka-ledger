@@ -8,10 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "NODE_OPTIONS='--dns-result-order=ipv4first' tsx server/index.ts",
-    "seed": "tsx scripts/seed.ts",
-    "seed:reset": "tsx scripts/seed.ts reset",
-    "query": "tsx scripts/query-db.ts"
+    "server": "NODE_OPTIONS='--dns-result-order=ipv4first' tsx --env-file=.env.local server/index.ts",
+    "seed": "tsx --env-file=.env.local scripts/seed.ts",
+    "seed:reset": "tsx --env-file=.env.local scripts/seed.ts reset",
+    "query": "tsx --env-file=.env.local scripts/query-db.ts"
   },
   "dependencies": {
     "@powersync/service-core": "^1.19.2",
