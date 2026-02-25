@@ -1,11 +1,13 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useSettings } from "@/lib/SettingsContext";
-import { Copy, Check, AlertTriangle } from "lucide-react";
+import { Copy, Check, AlertTriangle, RotateCcw } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export function Settings() {
   const { user, shop } = useAuth();
   const { lowStockThreshold, setLowStockThreshold } = useSettings();
+  const { t, i18n } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [threshold, setThreshold] = useState(lowStockThreshold.toString());
 
@@ -26,23 +28,35 @@ export function Settings() {
     }
   };
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('language', lng);
+  };
+
+  const restartTour = () => {
+    if (user) {
+      localStorage.removeItem(`tour_completed_${user.id}`);
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 xl:px-0 py-8">
-      <h1 className="text-3xl font-bold text-text mb-8">Settings</h1>
+      <h1 className="text-3xl font-bold text-text mb-8">{t('settings.title')}</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Panel */}
         <div className="space-y-6">
           {/* Shop Information */}
           <section className="bg-surface border border-border rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-text mb-4">Shop Information</h2>
+            <h2 className="text-xl font-semibold text-text mb-4">{t('settings.shopInfo')}</h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-muted">Shop Name</label>
+                <label className="text-sm font-medium text-muted">{t('settings.shopName')}</label>
                 <p className="text-text mt-1">{shop?.name}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted">Invite Code</label>
+                <label className="text-sm font-medium text-muted">{t('settings.inviteCode')}</label>
                 <div className="flex items-center gap-2 mt-1">
                   <code className="bg-bg px-3 py-2 rounded border border-border text-primary font-mono">
                     {shop?.invite_code}
@@ -60,7 +74,7 @@ export function Settings() {
                   </button>
                 </div>
                 <p className="text-sm text-muted mt-2">
-                  Share this code with family members to invite them to your shop
+                  {t('settings.inviteCodeDesc')}
                 </p>
               </div>
             </div>
@@ -68,11 +82,11 @@ export function Settings() {
 
           {/* Inventory Settings */}
           <section className="bg-surface border border-border rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-text mb-4">Inventory Settings</h2>
+            <h2 className="text-xl font-semibold text-text mb-4">{t('settings.inventorySettings')}</h2>
             <div className="space-y-4">
               <div>
                 <label htmlFor="lowStockThreshold" className="text-sm font-medium text-muted block mb-2">
-                  Low Stock Alert Threshold
+                  {t('settings.lowStockThreshold')}
                 </label>
                 <input
                   id="lowStockThreshold"
@@ -85,10 +99,9 @@ export function Settings() {
                 <div className="mt-3 p-3 bg-accent/10 border border-accent/20 rounded flex gap-2">
                   <AlertTriangle size={20} className="text-accent flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-muted">
-                    <p className="font-medium text-text mb-1">What this does:</p>
+                    <p className="font-medium text-text mb-1">{t('settings.whatThisDoes')}</p>
                     <p>
-                      Products with stock count below <strong className="text-primary">{lowStockThreshold}</strong> will 
-                      appear in the "Low Stock Alert" section on your dashboard. This helps you restock items before they run out.
+                      {t('settings.lowStockDesc')} <strong className="text-primary">{lowStockThreshold}</strong> {t('settings.lowStockDesc2')}
                     </p>
                   </div>
                 </div>
@@ -101,19 +114,55 @@ export function Settings() {
         <div className="space-y-6">
           {/* User Information */}
           <section className="bg-surface border border-border rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-text mb-4">User Information</h2>
+            <h2 className="text-xl font-semibold text-text mb-4">{t('settings.userInfo')}</h2>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-muted">Name</label>
+                <label className="text-sm font-medium text-muted">{t('settings.name')}</label>
                 <p className="text-text mt-1">{user?.name}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted">ID Number</label>
+                <label className="text-sm font-medium text-muted">{t('settings.idNumber')}</label>
                 <p className="text-text mt-1">{user?.id_number}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted">Role</label>
+                <label className="text-sm font-medium text-muted">{t('settings.role')}</label>
                 <p className="text-text mt-1 capitalize">{user?.role || 'member'}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* App Settings */}
+          <section className="bg-surface border border-border rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-text mb-4">{t('settings.appSettings')}</h2>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="language" className="text-sm font-medium text-muted block mb-2">
+                  {t('settings.language')}
+                </label>
+                <select
+                  id="language"
+                  value={i18n.language}
+                  onChange={(e) => changeLanguage(e.target.value)}
+                  className="w-full px-3 py-2 border border-border rounded bg-bg text-text focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="en">English</option>
+                  <option value="sw">Kiswahili</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-muted block mb-2">
+                  {t('settings.restartTour')}
+                </label>
+                <button
+                  onClick={restartTour}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90 transition-colors"
+                >
+                  <RotateCcw size={18} />
+                  {t('settings.restartTour')}
+                </button>
+                <p className="text-sm text-muted mt-2">
+                  {t('settings.restartTourDesc')}
+                </p>
               </div>
             </div>
           </section>
