@@ -235,11 +235,16 @@ app.post("/api/auth/join", async (req: Request, res: Response) => {
     );
 
     res.status(201).json({
-    token: jwt.sign({ shop_id: "joined-shop", user_id: "joined-user" }, JWT_SECRET, { expiresIn: "24h" }),
-    user: { id: "joined-user", name, id_number },
-    shop: { id: "joined-shop", name: "Joined Shop" },
-    role: "member"
-  });
+      token,
+      user: { id: userId, name, id_number },
+      shop: { id: shop.id, name: shop.name },
+      role: 'member'
+    });
+  } catch (error) {
+    await pool.query('ROLLBACK');
+    console.error("Join error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 interface SyncOperation {
