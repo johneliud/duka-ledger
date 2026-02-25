@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { LoginModal } from "@/components/LoginModal";
 import { RegisterModal } from "@/components/RegisterModal";
 import { JoinModal } from "@/components/JoinModal";
+import { StorageWarning } from "@/components/StorageWarning";
 import { Dashboard } from "@/pages/Dashboard";
 import { RecordSale } from "@/pages/RecordSale";
 import { SalesHistory } from "@/pages/SalesHistory";
@@ -17,14 +18,21 @@ import { SeedData } from "@/pages/SeedData";
 import { Landing } from "@/pages/Landing";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
+import { useStorageQuota } from "@/hooks/useStorageQuota";
 
 type AuthScreen = 'landing' | 'login' | 'register' | 'join';
 
 function App() {
 	const { isAuthenticated, login, register, joinShop } = useAuth();
 	const { showSuccess, showError } = useNotification();
+	const storageInfo = useStorageQuota();
 	const [authScreen, setAuthScreen] = useState<AuthScreen>('landing');
 	const [isLoading, setIsLoading] = useState(false);
+
+	const handleExport = () => {
+		window.location.href = '/analytics';
+		showSuccess('Navigate to Analytics to export data');
+	};
 
 	const handleLogin = async (idNumber: string, pin: string) => {
 		setIsLoading(true);
@@ -66,6 +74,13 @@ function App() {
 		<BrowserRouter>
 			<Header />
 			{isAuthenticated && <SyncBadge />}
+			{isAuthenticated && storageInfo?.isWarning && (
+				<StorageWarning
+					percentUsed={storageInfo.percentUsed}
+					isCritical={storageInfo.isCritical}
+					onExport={handleExport}
+				/>
+			)}
 			{!isAuthenticated ? (
 				<>
 					<Landing 
