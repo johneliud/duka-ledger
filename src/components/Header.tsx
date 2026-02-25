@@ -18,6 +18,7 @@ export function Header() {
 		{ name: 'Products', path: '/products' },
 		{ name: 'Expenses', path: '/expenses' },
 		{ name: 'Debt Book', path: '/debt-book' },
+		{ name: 'Analytics', path: '/analytics' },
 	];
 
 	return (

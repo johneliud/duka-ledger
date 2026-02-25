@@ -12,6 +12,7 @@ import { SalesHistory } from "@/pages/SalesHistory";
 import { Products } from "@/pages/Products";
 import { Expenses } from "@/pages/Expenses";
 import { DebtBook } from "@/pages/DebtBook";
+import { Analytics } from "@/pages/Analytics";
 import { SeedData } from "@/pages/SeedData";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
@@ -100,6 +101,7 @@ function App() {
 				<Route path="/products" element={<Products />} />
 				<Route path="/expenses" element={<Expenses />} />
 				<Route path="/debt-book" element={<DebtBook />} />
+				<Route path="/analytics" element={<Analytics />} />
 				<Route path="/seed" element={<SeedData />} />
 			</Routes>
 		</BrowserRouter>
