@@ -37,7 +37,7 @@ export function SyncBadge() {
 		if (!isOnline) return { icon: AlertCircle, text: 'Offline', color: 'text-primary', bgColor: 'bg-primary/10' };
 		if (isSyncing) return { icon: RefreshCw, text: 'Syncing...', color: 'text-accent', bgColor: 'bg-accent/10' };
 		if (pendingCount > 0) return { icon: Clock, text: `${pendingCount} pending`, color: 'text-accent', bgColor: 'bg-accent/10' };
-		return { icon: CircleCheck, text: 'All synced', color: 'text-secondary', bgColor: 'bg-secondary/10' };
+		return { icon: CircleCheck, text: 'Synced', color: 'text-secondary', bgColor: 'bg-secondary/10' };
 	};
 
 	const status = getSyncStatus();
@@ -48,10 +48,10 @@ export function SyncBadge() {
 			{/* Badge */}
 			<button
 				onClick={() => setShowDrawer(true)}
-				className={`fixed top-24 right-4 z-30 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg ${status.bgColor} ${status.color} flex items-center gap-2`}
+				className={`p-2 rounded-lg transition-all ${status.bgColor} ${status.color}`}
+				aria-label="Sync status"
 			>
-				<Icon size={16} className={isSyncing ? 'animate-spin' : ''} />
-				{status.text}
+				<Icon size={20} className={isSyncing ? 'animate-spin' : ''} />
 			</button>
 
 			{/* Drawer */}

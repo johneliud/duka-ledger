@@ -1,8 +1,10 @@
 import { useSales, useExpenses, useDebts, useProducts } from '@/hooks/useDatabase';
 import { Link } from 'react-router-dom';
 import { TrendingUp, TrendingDown, DollarSign, AlertTriangle, Plus } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export function Dashboard() {
+	const { user, shop } = useAuth();
 	const today = new Date().toISOString().split('T')[0];
 	const { data: sales } = useSales(today);
 	const { data: expenses } = useExpenses(today);
@@ -24,10 +26,11 @@ export function Dashboard() {
 	};
 
 	return (
-		<div className="container mx-auto px-4 lg:px-0 py-6 space-y-6">
+		<div className="container mx-auto px-4 xl:px-0 py-6 space-y-6">
 			<div>
-				<h1 className="text-2xl font-bold text-text mb-1">Dashboard</h1>
-				<p className="text-sm text-muted">Today's Summary</p>
+				<h1 className="text-2xl font-bold text-text mb-1">{shop?.name}'s Dashboard</h1>
+				<p className="text-sm text-muted">Welcome back, {user?.name}</p>
+				{/*<p className="text-sm text-muted">Today's Summary</p>*/}
 			</div>
 
 			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
