@@ -14,15 +14,16 @@ import { Expenses } from "@/pages/Expenses";
 import { DebtBook } from "@/pages/DebtBook";
 import { Analytics } from "@/pages/Analytics";
 import { SeedData } from "@/pages/SeedData";
+import { Landing } from "@/pages/Landing";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
 
-type AuthScreen = 'login' | 'register' | 'join';
+type AuthScreen = 'landing' | 'login' | 'register' | 'join';
 
 function App() {
 	const { isAuthenticated, login, register, joinShop } = useAuth();
 	const { showSuccess, showError } = useNotification();
-	const [authScreen, setAuthScreen] = useState<AuthScreen>('login');
+	const [authScreen, setAuthScreen] = useState<AuthScreen>('landing');
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogin = async (idNumber: string, pin: string) => {
@@ -64,25 +65,30 @@ function App() {
 	if (!isAuthenticated) {
 		return (
 			<>
+				<Landing 
+					onGetStarted={() => setAuthScreen('register')}
+					onLogin={() => setAuthScreen('login')}
+				/>
 				{authScreen === 'login' && (
 					<LoginModal
 						onLogin={handleLogin}
 						onSwitchToRegister={() => setAuthScreen('register')}
 						onSwitchToJoin={() => setAuthScreen('join')}
+						onBack={() => setAuthScreen('landing')}
 						isLoading={isLoading}
 					/>
 				)}
 				{authScreen === 'register' && (
 					<RegisterModal
 						onRegister={handleRegister}
-						onBack={() => setAuthScreen('login')}
+						onBack={() => setAuthScreen('landing')}
 						isLoading={isLoading}
 					/>
 				)}
 				{authScreen === 'join' && (
 					<JoinModal
 						onJoin={handleJoin}
-						onBack={() => setAuthScreen('login')}
+						onBack={() => setAuthScreen('landing')}
 						isLoading={isLoading}
 					/>
 				)}
@@ -95,7 +101,8 @@ function App() {
 			<Header />
 			<SyncBadge />
 			<Routes>
-				<Route path="/" element={<Dashboard />} />
+				<Route path="/" element={<Landing onGetStarted={() => window.location.href = '/dashboard'} onLogin={() => window.location.href = '/dashboard'} />} />
+				<Route path="/dashboard" element={<Dashboard />} />
 				<Route path="/record-sale" element={<RecordSale />} />
 				<Route path="/sales-history" element={<SalesHistory />} />
 				<Route path="/products" element={<Products />} />
