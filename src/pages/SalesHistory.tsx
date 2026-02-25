@@ -55,7 +55,7 @@ export function SalesHistory() {
 	const total = getTotal();
 
 	return (
-		<div className="container mx-auto px-4 lg:px-0 py-6">
+		<div className="container mx-auto px-4 xl:px-0 py-6">
 			<h1 className="text-2xl font-bold text-text mb-6">Sales History</h1>
 
 			<div className="grid lg:grid-cols-3 gap-6">

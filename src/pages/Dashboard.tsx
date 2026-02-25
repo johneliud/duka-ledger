@@ -26,7 +26,7 @@ export function Dashboard() {
 	};
 
 	return (
-		<div className="container mx-auto px-4 lg:px-0 py-6 space-y-6">
+		<div className="container mx-auto px-4 xl:px-0 py-6 space-y-6">
 			<div>
 				<h1 className="text-2xl font-bold text-text mb-1">{shop?.name}'s Dashboard</h1>
 				<p className="text-sm text-muted">Welcome back, {user?.name}</p>

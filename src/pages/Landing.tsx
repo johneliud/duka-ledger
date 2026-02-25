@@ -30,7 +30,7 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="py-20 lg:py-32">
-          <div className="container mx-auto px-4 lg:px-0">
+          <div className="container mx-auto px-4 xl:px-0">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
 							{/* Left Panel - Text */}
 							<div>
@@ -109,7 +109,7 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
 
         {/* Summary Section */}
         <section className="py-20 bg-surface border-y border-border">
-          <div className="container mx-auto px-4 lg:px-0">
+          <div className="container mx-auto px-4 xl:px-0">
             <h2 className="text-3xl font-bold text-text text-center mb-16">
               Built for the Modern Shop Owner
             </h2>

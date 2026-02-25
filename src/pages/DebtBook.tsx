@@ -103,7 +103,7 @@ export function DebtBook() {
 	const totalOwed = debts.reduce((sum, d) => sum + (d.amount_owed - d.amount_paid), 0);
 
 	return (
-		<div className="container mx-auto px-4 lg:px-0 py-6">
+		<div className="container mx-auto px-4 xl:px-0 py-6">
 			{selectedDebt ? (
 				<div className="max-w-2xl">
 					<button

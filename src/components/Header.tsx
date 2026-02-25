@@ -94,7 +94,7 @@ export function Header() {
 
 			{/* Mobile Dropdown Menu */}
 			{isMenuOpen && isAuthenticated && (
-				<div className="md:hidden fixed inset-0 z-50 bg-text/20 backdrop-blur-sm" onClick={toggleMenu}>
+				<div className="xl:hidden fixed inset-0 z-50 bg-text/20 backdrop-blur-sm" onClick={toggleMenu}>
 					<div 
 						className="absolute top-0 left-0 h-full w-3/4 bg-surface shadow-2xl border-r border-border p-6 flex flex-col gap-6 animate-slide-in-left"
 						onClick={(e) => e.stopPropagation()}

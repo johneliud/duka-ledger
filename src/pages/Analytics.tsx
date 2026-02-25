@@ -92,7 +92,7 @@ export function Analytics() {
 	const data = view === 'week' ? getWeeklyData() : getMonthlyData();
 
 	return (
-		<div className="container mx-auto px-4 lg:px-0 py-6">
+		<div className="container mx-auto px-4 xl:px-0 py-6">
 			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 				<h1 className="text-2xl font-bold text-text">Analytics</h1>
 				<div className="flex gap-2">
