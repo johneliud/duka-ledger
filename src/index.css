@@ -9,32 +9,38 @@
   --color-accent: #e8913a;
   --color-border: #e8d8c8;
   --color-muted: #9e8878;
-  
-  --font-family-sans: 'Space Grotesk', sans-serif;
+
+  --font-family-sans: "Space Grotesk", sans-serif;
+
+  --animate-slide-in-left: slideInLeft 0.3s ease-out;
+  --animate-slide-in-right: slideIn 0.3s ease-out;
+
+  @keyframes slideInLeft {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
 }
 
 * {
   font-family: var(--font-family-sans);
 }
 
-a,
-button {
-  cursor: pointer;
+a, button {
+	cursor: pointer;
 }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-

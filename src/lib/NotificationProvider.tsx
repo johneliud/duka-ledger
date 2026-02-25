@@ -38,7 +38,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
 	return (
 		<NotificationContext.Provider value={{ showSuccess, showError }}>
 			{children}
-			<div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+			<div className="fixed top-25 right-5 z-50 flex flex-col gap-2">
 				{notifications.map(notification => (
 					<div
 						key={notification.id}
