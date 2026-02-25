@@ -10,38 +10,72 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [token, setToken] = useState<string | null>(null);
 
 	useEffect(() => {
-		// Check for existing session in memory (will be lost on refresh for now)
-		// TODO: Add IndexedDB persistence for "Remember this device"
+		const savedSession = localStorage.getItem('duka_session');
+		if (savedSession) {
+			try {
+				const { user, shop, role, token } = JSON.parse(savedSession);
+				setUser(user);
+				setShop(shop);
+				setRole(role);
+				setToken(token);
+				connector.setCredentials(shop.id, user.id);
+			} catch (e) {
+				console.error('Failed to restore session:', e);
+				localStorage.removeItem('duka_session');
+			}
+		}
 	}, []);
+
+	const saveSession = (user: any, shop: any, role: string, token: string) => {
+		localStorage.setItem('duka_session', JSON.stringify({ user, shop, role, token }));
+	};
 
 	const login = async (idNumber: string, pin: string) => {
 		const response = await apiLogin(idNumber, pin);
-		setUser(response.user);
-		setShop(response.shop);
-		setRole(response.role || 'member');
-		setToken(response.token);
+		const user = response.user;
+		const shop = response.shop;
+		const role = response.role || 'member';
+		const token = response.token;
+
+		setUser(user);
+		setShop(shop);
+		setRole(role);
+		setToken(token);
 		
-		connector.setCredentials(response.shop.id, response.user.id);
+		saveSession(user, shop, role, token);
+		connector.setCredentials(shop.id, user.id);
 	};
 
 	const register = async (name: string, idNumber: string, pin: string, shopName: string) => {
 		const response = await apiRegister(name, idNumber, pin, shopName);
-		setUser(response.user);
-		setShop(response.shop);
-		setRole('owner');
-		setToken(response.token);
+		const user = response.user;
+		const shop = response.shop;
+		const role = 'owner';
+		const token = response.token;
+
+		setUser(user);
+		setShop(shop);
+		setRole(role);
+		setToken(token);
 		
-		connector.setCredentials(response.shop.id, response.user.id);
+		saveSession(user, shop, role, token);
+		connector.setCredentials(shop.id, user.id);
 	};
 
 	const joinShop = async (name: string, idNumber: string, pin: string, inviteCode: string) => {
 		const response = await apiJoinShop(name, idNumber, pin, inviteCode);
-		setUser(response.user);
-		setShop(response.shop);
-		setRole('member');
-		setToken(response.token);
+		const user = response.user;
+		const shop = response.shop;
+		const role = 'member';
+		const token = response.token;
+
+		setUser(user);
+		setShop(shop);
+		setRole(role);
+		setToken(token);
 		
-		connector.setCredentials(response.shop.id, response.user.id);
+		saveSession(user, shop, role, token);
+		connector.setCredentials(shop.id, user.id);
 	};
 
 	const logout = () => {
@@ -49,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setShop(null);
 		setRole(null);
 		setToken(null);
+		localStorage.removeItem('duka_session');
 	};
 
 	return (
