@@ -7,9 +7,10 @@ import { RegisterModal } from "@/components/RegisterModal";
 import { JoinModal } from "@/components/JoinModal";
 import { RecordSale } from "@/pages/RecordSale";
 import { SalesHistory } from "@/pages/SalesHistory";
+import { Products } from "@/pages/Products";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
-import { Plus, History } from "lucide-react";
+import { Plus, History, Package } from "lucide-react";
 
 type AuthScreen = 'login' | 'register' | 'join';
 
@@ -109,11 +110,19 @@ function App() {
 								<History size={20} />
 								Sales History
 							</Link>
+							<Link
+								to="/products"
+								className="inline-flex items-center gap-2 px-6 py-3 bg-surface border border-border text-text rounded font-medium hover:bg-border"
+							>
+								<Package size={20} />
+								Products
+							</Link>
 						</div>
 					</div>
 				} />
 				<Route path="/record-sale" element={<RecordSale />} />
 				<Route path="/sales-history" element={<SalesHistory />} />
+				<Route path="/products" element={<Products />} />
 			</Routes>
 		</BrowserRouter>
 	);
