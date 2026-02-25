@@ -1,13 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { db } from '@/db/powersync';
 import { CircleCheck, Clock, RefreshCw, AlertCircle, X } from 'lucide-react';
 
 export function SyncBadge() {
 	const { isOnline } = useNetworkStatus();
 	const [showDrawer, setShowDrawer] = useState(false);
-	const [pendingCount] = useState(0); // TODO: Get from PowerSync ps_crud table
-	const [isSyncing] = useState(false); // TODO: Get from PowerSync sync status
-	const [lastSyncTime] = useState(new Date());
+	const [pendingCount, setPendingCount] = useState(0);
+	const [isSyncing, setIsSyncing] = useState(false);
+	const [lastSyncTime, setLastSyncTime] = useState(new Date());
+
+	useEffect(() => {
+		const checkSyncStatus = async () => {
+			try {
+				const syncStatus = db.currentStatus;
+				setIsSyncing(syncStatus?.connected || false);
+				
+				const result = await db.execute('SELECT COUNT(*) as count FROM ps_crud');
+				const count = result.rows?._array?.[0]?.count || 0;
+				setPendingCount(count);
+				
+				if (syncStatus?.connected && pendingCount === 0) {
+					setLastSyncTime(new Date());
+				}
+			} catch (error) {
+				console.debug('Sync status check:', error);
+			}
+		};
+
+		checkSyncStatus();
+		const interval = setInterval(checkSyncStatus, 2000);
+		return () => clearInterval(interval);
+	}, [pendingCount]);
 
 	const getSyncStatus = () => {
 		if (!isOnline) return { icon: AlertCircle, text: 'Offline', color: 'text-primary', bgColor: 'bg-primary/10' };
@@ -78,12 +102,9 @@ export function SyncBadge() {
 
 							{pendingCount > 0 && (
 								<div className="pt-4 border-t border-border">
-									<div className="text-xs text-muted mb-2">Pending Records</div>
-									<div className="space-y-1 max-h-40 overflow-y-auto">
-										{/* TODO: Map through pending records from ps_crud */}
-										<div className="text-sm text-text bg-bg p-2 rounded">
-											Sample pending record
-										</div>
+									<div className="text-xs text-muted mb-2">Pending Records ({pendingCount})</div>
+									<div className="text-sm text-text bg-bg p-2 rounded">
+										{pendingCount} change{pendingCount !== 1 ? 's' : ''} waiting to sync
 									</div>
 								</div>
 							)}
