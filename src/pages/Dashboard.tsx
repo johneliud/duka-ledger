@@ -2,9 +2,11 @@ import { useSales, useExpenses, useDebts, useProducts } from '@/hooks/useDatabas
 import { Link } from 'react-router-dom';
 import { TrendingUp, TrendingDown, DollarSign, AlertTriangle, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useSettings } from '@/lib/SettingsContext';
 
 export function Dashboard() {
 	const { user, shop } = useAuth();
+	const { lowStockThreshold } = useSettings();
 	const today = new Date().toISOString().split('T')[0];
 	const { data: sales } = useSales(today);
 	const { data: expenses } = useExpenses(today);
@@ -19,7 +21,7 @@ export function Dashboard() {
 		.reduce((sum, d) => sum + (d.amount_owed - d.amount_paid), 0);
 
 	const recentSales = sales.slice(0, 5);
-	const lowStock = products.filter(p => p.stock_count < 5);
+	const lowStock = products.filter(p => p.stock_count < lowStockThreshold);
 
 	const getProductName = (productId: string) => {
 		return products.find(p => p.id === productId)?.name || 'Unknown';
