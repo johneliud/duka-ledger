@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Sun, Moon, Store } from 'lucide-react';
+import { Menu, X, Sun, Moon, Store, LogOut } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export function Header() {
+	const { logout } = useAuth();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -14,6 +16,7 @@ export function Header() {
 		{ name: 'Record Sale', path: '/record-sale' },
 		{ name: 'Sales History', path: '/sales-history' },
 		{ name: 'Expenses', path: '/expenses' },
+		{ name: 'Debt Book', path: '/debt-book' },
 	];
 
 	return (
@@ -21,7 +24,6 @@ export function Header() {
 			<div className="container mx-auto px-4 lg:px-0 h-16 flex items-center justify-between">
 				{/* Left: Logo */}
 				<Link to="/" className="flex items-center gap-2 text-primary">
-					<Store size={24} strokeWidth={2.5} />
 					<span className="text-xl font-bold tracking-tight text-text">Duka Ledger</span>
 				</Link>
 
@@ -40,6 +42,15 @@ export function Header() {
 
 				{/* Right: Theme Toggle & Hamburger */}
 				<div className="flex items-center gap-2">
+					<button
+						onClick={logout}
+						className="p-2 text-muted hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+						aria-label="Logout"
+						title="Logout"
+					>
+						<LogOut size={20} />
+					</button>
+
 					<button
 						onClick={toggleTheme}
 						className="p-2 text-muted hover:text-primary hover:bg-bg rounded-lg transition-colors"
@@ -81,6 +92,16 @@ export function Header() {
 									{link.name}
 								</Link>
 							))}
+							<button
+								onClick={() => {
+									toggleMenu();
+									logout();
+								}}
+								className="text-lg font-medium text-red-600 hover:bg-red-50 py-2 px-4 rounded-lg transition-colors flex items-center gap-2 mt-4 border border-red-100"
+							>
+								<LogOut size={20} />
+								Logout
+							</button>
 						</nav>
 					</div>
 				</div>
