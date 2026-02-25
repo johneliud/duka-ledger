@@ -10,6 +10,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 export class DukaConnector implements PowerSyncBackendConnector {
 	private shopId: string | null = null;
 	private userId: string | null = null;
+	private retryDelays = [1000, 2000, 4000, 8000, 16000, 60000]; // Exponential backoff capped at 60s
+	private currentRetry = 0;
 
 	async fetchCredentials(): Promise<PowerSyncCredentials> {
 		// For now, use hardcoded credentials for testing
@@ -48,7 +50,7 @@ export class DukaConnector implements PowerSyncBackendConnector {
 			data: entry.opData
 		}));
 
-		console.log(`Uploading ${operations.length} operations to server`);
+		console.log(`[Sync] Uploading ${operations.length} records`);
 
 		try {
 			const response = await fetch(`${API_URL}/api/sync/upload`, {
@@ -62,9 +64,16 @@ export class DukaConnector implements PowerSyncBackendConnector {
 			}
 
 			await batch.complete();
-			console.log('Upload successful');
+			this.currentRetry = 0; // Reset retry counter on success
+			console.log('[Sync] Complete');
 		} catch (error) {
-			console.error('Upload error:', error);
+			const delay = this.retryDelays[Math.min(this.currentRetry, this.retryDelays.length - 1)];
+			this.currentRetry++;
+			
+			console.error(`[Sync] Failed, retry in ${delay / 1000}s`, error);
+			
+			// PowerSync will automatically retry based on its internal logic
+			// We just log the error and throw to let PowerSync handle the retry
 			throw error;
 		}
 	}

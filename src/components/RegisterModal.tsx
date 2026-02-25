@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X } from 'lucide-react';
 
 interface RegisterModalProps {
 	onRegister: (name: string, idNumber: string, pin: string, shopName: string) => void;
@@ -22,7 +23,15 @@ export function RegisterModal({ onRegister, onBack, isLoading }: RegisterModalPr
 
 	return (
 		<div className="fixed inset-0 bg-text/50 backdrop-blur-lg flex items-center justify-center z-50 p-4">
-			<div className="bg-surface rounded-2xl border border-border w-full max-w-md lg:max-w-4xl overflow-hidden flex flex-col lg:flex-row">
+			<div className="bg-surface rounded-2xl border border-border w-full max-w-md lg:max-w-4xl overflow-hidden flex flex-col lg:flex-row relative">
+				<button
+					onClick={onBack}
+					className="absolute top-4 right-4 p-2 text-muted hover:text-text hover:bg-bg rounded-lg transition-colors z-10"
+					aria-label="Close"
+				>
+					<X size={24} />
+				</button>
+				
 				{/* Left Panel - Large Devices Only */}
 				<div className="hidden lg:flex lg:w-1/2 bg-secondary p-12 flex-col justify-center text-bg">
 					<h1 className="text-4xl font-bold mb-4">Start Your Journey</h1>
@@ -117,7 +126,7 @@ export function RegisterModal({ onRegister, onBack, isLoading }: RegisterModalPr
 							onClick={onBack}
 							className="w-full py-3 border border-border text-text rounded-lg hover:bg-bg transition-colors"
 						>
-							Back to Login
+							Back to Home
 						</button>
 					</form>
 				</div>

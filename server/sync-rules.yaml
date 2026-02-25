@@ -1,0 +1,15 @@
+# PowerSync Sync Rules Configuration
+# Each vendor only syncs data for their own shop (partial sync)
+
+bucket_definitions:
+  user_shop:
+    # Extract shop_id from JWT token parameters
+    parameters:
+      - SELECT token_parameters.shop_id as shop_id
+    
+    # Sync only data belonging to this shop
+    data:
+      - SELECT * FROM products WHERE shop_id = bucket.shop_id
+      - SELECT * FROM sales WHERE shop_id = bucket.shop_id
+      - SELECT * FROM expenses WHERE shop_id = bucket.shop_id
+      - SELECT * FROM debts WHERE shop_id = bucket.shop_id
