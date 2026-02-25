@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 interface LandingProps {
   onGetStarted: () => void;
   onLogin: () => void;
+  isAuthenticated?: boolean;
 }
 
 const carouselItems = [
@@ -14,7 +15,7 @@ const carouselItems = [
 	{ icon: Users, title: 'Debt Book', description: 'Manage customer credit and payment tracking' },
 ];
 
-export function Landing({ onGetStarted, onLogin }: LandingProps) {
+export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps) {
 	const [currentSlide, setCurrentSlide] = useState(0);
 
 	useEffect(() => {
@@ -42,21 +43,31 @@ export function Landing({ onGetStarted, onLogin }: LandingProps) {
 									Built for the market, designed to work everywhere—even without
 									internet.
 								</p>
-								<div className="flex flex-col sm:flex-row gap-4">
+								{!isAuthenticated ? (
+									<div className="flex flex-col sm:flex-row gap-4">
+										<button
+											onClick={onGetStarted}
+											className="px-8 py-4 bg-primary text-bg rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-transform active:scale-95 shadow-lg shadow-primary/20"
+										>
+											Get Started for Free
+											<ArrowRight size={20} />
+										</button>
+										<button
+											onClick={onLogin}
+											className="px-8 py-4 bg-surface text-text border border-border rounded-xl font-bold text-lg hover:bg-bg transition-colors"
+										>
+											Sign In
+										</button>
+									</div>
+								) : (
 									<button
-										onClick={onGetStarted}
+										onClick={() => window.location.href = '/dashboard'}
 										className="px-8 py-4 bg-primary text-bg rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-transform active:scale-95 shadow-lg shadow-primary/20"
 									>
-										Get Started for Free
+										Proceed to Dashboard
 										<ArrowRight size={20} />
 									</button>
-									<button
-										onClick={onLogin}
-										className="px-8 py-4 bg-surface text-text border border-border rounded-xl font-bold text-lg hover:bg-bg transition-colors"
-									>
-										Sign In
-									</button>
-								</div>
+								)}
 							</div>
 
 							{/* Right Panel - Carousel */}

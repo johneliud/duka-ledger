@@ -62,55 +62,54 @@ function App() {
 		}
 	};
 
-	if (!isAuthenticated) {
-		return (
-			<>
-				<Landing 
-					onGetStarted={() => setAuthScreen('register')}
-					onLogin={() => setAuthScreen('login')}
-				/>
-				{authScreen === 'login' && (
-					<LoginModal
-						onLogin={handleLogin}
-						onSwitchToRegister={() => setAuthScreen('register')}
-						onSwitchToJoin={() => setAuthScreen('join')}
-						onBack={() => setAuthScreen('landing')}
-						isLoading={isLoading}
-					/>
-				)}
-				{authScreen === 'register' && (
-					<RegisterModal
-						onRegister={handleRegister}
-						onBack={() => setAuthScreen('landing')}
-						isLoading={isLoading}
-					/>
-				)}
-				{authScreen === 'join' && (
-					<JoinModal
-						onJoin={handleJoin}
-						onBack={() => setAuthScreen('landing')}
-						isLoading={isLoading}
-					/>
-				)}
-			</>
-		);
-	}
-
 	return (
 		<BrowserRouter>
 			<Header />
-			<SyncBadge />
-			<Routes>
-				<Route path="/" element={<Landing onGetStarted={() => window.location.href = '/dashboard'} onLogin={() => window.location.href = '/dashboard'} />} />
-				<Route path="/dashboard" element={<Dashboard />} />
-				<Route path="/record-sale" element={<RecordSale />} />
-				<Route path="/sales-history" element={<SalesHistory />} />
-				<Route path="/products" element={<Products />} />
-				<Route path="/expenses" element={<Expenses />} />
-				<Route path="/debt-book" element={<DebtBook />} />
-				<Route path="/analytics" element={<Analytics />} />
-				<Route path="/seed" element={<SeedData />} />
-			</Routes>
+			{isAuthenticated && <SyncBadge />}
+			{!isAuthenticated ? (
+				<>
+					<Landing 
+						onGetStarted={() => setAuthScreen('register')}
+						onLogin={() => setAuthScreen('login')}
+						isAuthenticated={false}
+					/>
+					{authScreen === 'login' && (
+						<LoginModal
+							onLogin={handleLogin}
+							onSwitchToRegister={() => setAuthScreen('register')}
+							onSwitchToJoin={() => setAuthScreen('join')}
+							onBack={() => setAuthScreen('landing')}
+							isLoading={isLoading}
+						/>
+					)}
+					{authScreen === 'register' && (
+						<RegisterModal
+							onRegister={handleRegister}
+							onBack={() => setAuthScreen('landing')}
+							isLoading={isLoading}
+						/>
+					)}
+					{authScreen === 'join' && (
+						<JoinModal
+							onJoin={handleJoin}
+							onBack={() => setAuthScreen('landing')}
+							isLoading={isLoading}
+						/>
+					)}
+				</>
+			) : (
+				<Routes>
+					<Route path="/" element={<Landing onGetStarted={() => window.location.href = '/dashboard'} onLogin={() => window.location.href = '/dashboard'} isAuthenticated={true} />} />
+					<Route path="/dashboard" element={<Dashboard />} />
+					<Route path="/record-sale" element={<RecordSale />} />
+					<Route path="/sales-history" element={<SalesHistory />} />
+					<Route path="/products" element={<Products />} />
+					<Route path="/expenses" element={<Expenses />} />
+					<Route path="/debt-book" element={<DebtBook />} />
+					<Route path="/analytics" element={<Analytics />} />
+					<Route path="/seed" element={<SeedData />} />
+				</Routes>
+			)}
 		</BrowserRouter>
 	);
 }
