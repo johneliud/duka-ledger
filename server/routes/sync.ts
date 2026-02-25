@@ -1,7 +1,9 @@
 import { Router, Request, Response } from "express";
-import { pool } from "../db.ts";
+import { supabase } from "../db.ts";
 
 const router = Router();
+
+const ALLOWED_TABLES = ["products", "sales", "expenses", "debts"];
 
 interface SyncOperation {
   type: "INSERT" | "UPDATE" | "DELETE";
@@ -16,43 +18,39 @@ router.post("/upload", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "operations array required" });
   }
 
-  const client = await pool.connect();
   try {
-    await client.query("BEGIN");
-
     for (const op of operations) {
       const { type, table, data } = op;
 
+      // Only allow writes to core data tables — never auth tables
+      if (!ALLOWED_TABLES.includes(table)) {
+        return res.status(403).json({ error: `Table "${table}" is not writable via sync` });
+      }
+
       if (type === "INSERT") {
-        const keys = Object.keys(data);
-        const values = Object.values(data);
-        const placeholders = keys.map((_, i) => `$${i + 1}`).join(", ");
-        await client.query(
-          `INSERT INTO ${table} (${keys.join(", ")}) VALUES (${placeholders})`,
-          values,
-        );
+        const { error } = await supabase.from(table).insert(data);
+        if (error) throw error;
+
       } else if (type === "UPDATE") {
         const { id, ...updates } = data;
-        const keys = Object.keys(updates);
-        const values = Object.values(updates);
-        const setClause = keys.map((k, i) => `${k} = $${i + 1}`).join(", ");
-        await client.query(
-          `UPDATE ${table} SET ${setClause} WHERE id = $${keys.length + 1}`,
-          [...values, id],
-        );
+        if (!id) throw new Error(`UPDATE on "${table}" missing id field`);
+        const { error } = await supabase.from(table).update(updates).eq("id", id);
+        if (error) throw error;
+
       } else if (type === "DELETE") {
-        await client.query(`DELETE FROM ${table} WHERE id = $1`, [data.id]);
+        if (!data.id) throw new Error(`DELETE on "${table}" missing id field`);
+        const { error } = await supabase.from(table).delete().eq("id", data.id);
+        if (error) throw error;
+
+      } else {
+        return res.status(400).json({ error: `Unknown operation type: ${type}` });
       }
     }
 
-    await client.query("COMMIT");
     res.json({ success: true });
   } catch (error) {
-    await client.query("ROLLBACK");
     console.error("Sync error:", error);
     res.status(500).json({ error: "Sync failed" });
-  } finally {
-    client.release();
   }
 });
 
