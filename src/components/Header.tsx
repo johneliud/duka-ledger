@@ -24,7 +24,6 @@ export function Header() {
 			<div className="container mx-auto px-4 lg:px-0 h-16 flex items-center justify-between">
 				{/* Left: Logo */}
 				<Link to="/" className="flex items-center gap-2 text-primary">
-					<Store size={24} strokeWidth={2.5} />
 					<span className="text-xl font-bold tracking-tight text-text">Duka Ledger</span>
 				</Link>
 
