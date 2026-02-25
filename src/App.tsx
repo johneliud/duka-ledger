@@ -1,11 +1,14 @@
 import "./App.css";
 import { useState } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { SyncBadge } from "@/components/SyncBadge";
 import { LoginModal } from "@/components/LoginModal";
 import { RegisterModal } from "@/components/RegisterModal";
 import { JoinModal } from "@/components/JoinModal";
+import { RecordSale } from "@/pages/RecordSale";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
+import { Plus } from "lucide-react";
 
 type AuthScreen = 'login' | 'register' | 'join';
 
@@ -81,15 +84,27 @@ function App() {
 	}
 
 	return (
-		<>
+		<BrowserRouter>
 			<SyncBadge />
-			<div className="p-8">
-				<h1 className="text-2xl font-bold text-text mb-4">
-					Welcome, {user?.name}!
-				</h1>
-				<p className="text-muted">Shop: {shop?.name}</p>
-			</div>
-		</>
+			<Routes>
+				<Route path="/" element={
+					<div className="p-8">
+						<h1 className="text-2xl font-bold text-text mb-4">
+							Welcome, {user?.name}!
+						</h1>
+						<p className="text-muted mb-6">Shop: {shop?.name}</p>
+						<Link
+							to="/record-sale"
+							className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded font-medium hover:bg-accent"
+						>
+							<Plus size={20} />
+							Record Sale
+						</Link>
+					</div>
+				} />
+				<Route path="/record-sale" element={<RecordSale />} />
+			</Routes>
+		</BrowserRouter>
 	);
 }
 
