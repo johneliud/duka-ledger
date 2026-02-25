@@ -9,6 +9,7 @@ interface User {
 interface Shop {
 	id: string;
 	name: string;
+	invite_code?: string;
 }
 
 export interface AuthContextType {
