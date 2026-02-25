@@ -1,14 +1,15 @@
 import { X, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface StorageWarningProps {
 	percentUsed: number;
 	isCritical: boolean;
-	onExport: () => void;
 }
 
-export function StorageWarning({ percentUsed, isCritical, onExport }: StorageWarningProps) {
+export function StorageWarning({ percentUsed, isCritical }: StorageWarningProps) {
 	const [dismissed, setDismissed] = useState(false);
+	const navigate = useNavigate();
 
 	if (dismissed) return null;
 
@@ -29,12 +30,12 @@ export function StorageWarning({ percentUsed, isCritical, onExport }: StorageWar
 						}
 					</p>
 					<button
-						onClick={onExport}
+						onClick={() => navigate('/analytics')}
 						className={`mt-2 text-sm font-medium underline ${
 							isCritical ? 'text-red-800 hover:text-red-900' : 'text-amber-800 hover:text-amber-900'
 						}`}
 					>
-						Export to CSV
+						Export to CSV/PDF
 					</button>
 				</div>
 				<button
