@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Sun, Moon, LogOut } from 'lucide-react';
+import { Menu, X, Sun, Moon, SquareArrowRightExit } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { SyncBadge } from '@/components/SyncBadge';
 
@@ -74,7 +74,7 @@ export function Header() {
 									aria-label="Logout"
 									title="Logout"
 								>
-									<LogOut size={20} />
+									<SquareArrowRightExit size={20} />
 								</button>
 							</div>
 						</>
@@ -134,7 +134,7 @@ export function Header() {
 									}}
 									className="w-full text-lg font-medium text-red-600 hover:bg-red-50 py-2 px-4 rounded-lg transition-colors flex items-center gap-2 border border-red-100"
 								>
-									<LogOut size={20} />
+									<SquareArrowRightExit size={20} />
 									Logout
 								</button>
 							</div>
