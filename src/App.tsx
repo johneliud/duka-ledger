@@ -2,15 +2,17 @@ import "./App.css";
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { SyncBadge } from "@/components/SyncBadge";
+import { Header } from "@/components/Header";
 import { LoginModal } from "@/components/LoginModal";
 import { RegisterModal } from "@/components/RegisterModal";
 import { JoinModal } from "@/components/JoinModal";
 import { RecordSale } from "@/pages/RecordSale";
 import { SalesHistory } from "@/pages/SalesHistory";
 import { Products } from "@/pages/Products";
+import { Expenses } from "@/pages/Expenses";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
-import { Plus, History, Package } from "lucide-react";
+import { Plus, History, Package, Receipt } from "lucide-react";
 
 type AuthScreen = 'login' | 'register' | 'join';
 
@@ -87,43 +89,56 @@ function App() {
 
 	return (
 		<BrowserRouter>
-			<SyncBadge />
-			<Routes>
-				<Route path="/" element={
-					<div className="p-8">
-						<h1 className="text-2xl font-bold text-text mb-4">
-							Welcome, {user?.name}!
-						</h1>
-						<p className="text-muted mb-6">Shop: {shop?.name}</p>
-						<div className="flex gap-3">
-							<Link
-								to="/record-sale"
-								className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded font-medium hover:bg-accent"
-							>
-								<Plus size={20} />
-								Record Sale
-							</Link>
-							<Link
-								to="/sales-history"
-								className="inline-flex items-center gap-2 px-6 py-3 bg-surface border border-border text-text rounded font-medium hover:bg-border"
-							>
-								<History size={20} />
-								Sales History
-							</Link>
-							<Link
-								to="/products"
-								className="inline-flex items-center gap-2 px-6 py-3 bg-surface border border-border text-text rounded font-medium hover:bg-border"
-							>
-								<Package size={20} />
-								Products
-							</Link>
-						</div>
-					</div>
-				} />
-				<Route path="/record-sale" element={<RecordSale />} />
-				<Route path="/sales-history" element={<SalesHistory />} />
-				<Route path="/products" element={<Products />} />
-			</Routes>
+			<div className="min-h-screen bg-bg">
+				<Header />
+				<SyncBadge />
+				<main>
+					<Routes>
+						<Route path="/" element={
+							<div className="p-8">
+								<h1 className="text-2xl font-bold text-text mb-4">
+									Welcome, {user?.name}!
+								</h1>
+								<p className="text-muted mb-6">Shop: {shop?.name}</p>
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+									<Link
+										to="/record-sale"
+										className="inline-flex items-center gap-3 px-6 py-4 bg-primary text-white rounded-xl font-bold hover:bg-accent transition-all shadow-sm hover:shadow-md"
+									>
+										<Plus size={24} />
+										Record Sale
+									</Link>
+									<Link
+										to="/sales-history"
+										className="inline-flex items-center gap-3 px-6 py-4 bg-surface border border-border text-text rounded-xl font-bold hover:bg-bg transition-all shadow-sm hover:shadow-md"
+									>
+										<History size={24} />
+										Sales History
+									</Link>
+									<Link
+										to="/products"
+										className="inline-flex items-center gap-3 px-6 py-4 bg-surface border border-border text-text rounded-xl font-bold hover:bg-bg transition-all shadow-sm hover:shadow-md"
+									>
+										<Package size={24} />
+										Products
+									</Link>
+									<Link
+										to="/expenses"
+										className="inline-flex items-center gap-3 px-6 py-4 bg-surface border border-border text-text rounded-xl font-bold hover:bg-bg transition-all shadow-sm hover:shadow-md"
+									>
+										<Receipt size={24} />
+										Expenses
+									</Link>
+								</div>
+							</div>
+						} />
+						<Route path="/record-sale" element={<RecordSale />} />
+						<Route path="/sales-history" element={<SalesHistory />} />
+						<Route path="/products" element={<Products />} />
+						<Route path="/expenses" element={<Expenses />} />
+					</Routes>
+				</main>
+			</div>
 		</BrowserRouter>
 	);
 }
