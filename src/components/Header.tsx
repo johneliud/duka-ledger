@@ -13,13 +13,13 @@ export function Header() {
 	const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
 	const navLinks = [
-		{ name: 'Dashboard', path: '/dashboard' },
-		{ name: 'Record Sale', path: '/record-sale' },
-		{ name: 'Sales History', path: '/sales-history' },
-		{ name: 'Products', path: '/products' },
-		{ name: 'Expenses', path: '/expenses' },
-		{ name: 'Debt Book', path: '/debt-book' },
-		{ name: 'Analytics', path: '/analytics' },
+		{ name: 'Dashboard', path: '/dashboard', tour: 'dashboard' },
+		{ name: 'Record Sale', path: '/record-sale', tour: 'sales' },
+		{ name: 'Sales History', path: '/sales-history', tour: 'sales' },
+		{ name: 'Products', path: '/products', tour: 'inventory' },
+		{ name: 'Expenses', path: '/expenses', tour: 'expenses' },
+		{ name: 'Debt Book', path: '/debt-book', tour: 'debt' },
+		{ name: 'Analytics', path: '/analytics', tour: 'reports' },
 	];
 
 	return (
@@ -37,6 +37,7 @@ export function Header() {
 							<Link
 								key={link.name}
 								to={link.path}
+								data-tour={link.tour}
 								className="text-sm font-medium text-muted hover:text-primary transition-colors"
 							>
 								{link.name}
