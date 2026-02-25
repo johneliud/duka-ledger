@@ -9,10 +9,12 @@ type ViewType = 'week' | 'month';
 
 export function Analytics() {
 	const [view, setView] = useState<ViewType>('week');
+	const [showExportMenu, setShowExportMenu] = useState(false);
 	const { data: allSales } = useSales();
 	const { showSuccess, showError } = useNotification();
 
 	const handleExport = async (type: 'csv' | 'pdf', entity: 'sales' | 'expenses' | 'debts') => {
+		setShowExportMenu(false);
 		try {
 			if (type === 'csv') {
 				if (entity === 'sales') await exportSalesToCSV();
@@ -91,15 +93,19 @@ export function Analytics() {
 
 	return (
 		<div className="container mx-auto px-4 lg:px-0 py-6">
-			<div className="flex items-center justify-between mb-6">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 				<h1 className="text-2xl font-bold text-text">Analytics</h1>
 				<div className="flex gap-2">
-					<div className="relative group">
-						<button className="px-4 py-2 bg-secondary text-white rounded flex items-center gap-2">
+					<div className="relative">
+						<button 
+							onClick={() => setShowExportMenu(!showExportMenu)}
+							className="px-4 py-2 bg-secondary text-white rounded flex items-center gap-2 w-full sm:w-auto justify-center"
+						>
 							<Download size={18} />
 							Export
 						</button>
-						<div className="hidden group-hover:block absolute right-0 mt-1 bg-surface border border-border rounded shadow-lg z-10 min-w-[200px]">
+						{showExportMenu && (
+							<div className="absolute right-0 sm:right-0 left-0 sm:left-auto mt-1 bg-surface border border-border rounded shadow-lg z-10 min-w-[200px]">
 							<button onClick={() => handleExport('csv', 'sales')} className="w-full px-4 py-2 text-left hover:bg-bg flex items-center gap-2">
 								<FileText size={16} /> Sales CSV
 							</button>
@@ -119,6 +125,7 @@ export function Analytics() {
 								<FileText size={16} /> Debts PDF
 							</button>
 						</div>
+						)}
 					</div>
 				</div>
 			</div>
