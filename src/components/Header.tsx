@@ -24,7 +24,7 @@ export function Header() {
 
 	return (
 		<header className="sticky h-20 flex items-center top-0 z-40 w-full bg-surface border-b border-border">
-			<div className="container mx-auto px-4 lg:px-0 h-16 flex items-center justify-between">
+			<div className="container mx-auto px-4 xl:px-0 h-16 flex items-center justify-between">
 				{/* Left: Logo */}
 				<Link to="/" className="flex items-center gap-2 text-primary">
 					<span className="text-xl font-bold tracking-tight text-text">Duka Ledger</span>
@@ -32,7 +32,7 @@ export function Header() {
 
 				{/* Middle: Desktop Navigation */}
 				{isAuthenticated && (
-					<nav className="hidden md:flex items-center gap-6">
+					<nav className="hidden xl:flex items-center gap-6">
 						{navLinks.map((link) => (
 							<Link
 								key={link.name}
@@ -53,13 +53,13 @@ export function Header() {
 							
 							<button
 								onClick={toggleMenu}
-								className="md:hidden p-2 text-muted hover:text-primary hover:bg-bg rounded-lg transition-colors"
+								className="xl:hidden p-2 text-muted hover:text-primary hover:bg-bg rounded-lg transition-colors"
 								aria-label="Toggle menu"
 							>
 								{isMenuOpen ? <X size={24} /> : <Menu size={24} />}
 							</button>
 
-							<div className="hidden md:flex items-center gap-8">
+							<div className="hidden xl:flex items-center gap-8">
 								<button
 									onClick={toggleTheme}
 									className="py-2 text-muted hover:text-primary hover:bg-bg rounded-lg transition-colors"
