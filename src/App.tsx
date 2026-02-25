@@ -6,9 +6,10 @@ import { LoginModal } from "@/components/LoginModal";
 import { RegisterModal } from "@/components/RegisterModal";
 import { JoinModal } from "@/components/JoinModal";
 import { RecordSale } from "@/pages/RecordSale";
+import { SalesHistory } from "@/pages/SalesHistory";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
-import { Plus } from "lucide-react";
+import { Plus, History } from "lucide-react";
 
 type AuthScreen = 'login' | 'register' | 'join';
 
@@ -93,16 +94,26 @@ function App() {
 							Welcome, {user?.name}!
 						</h1>
 						<p className="text-muted mb-6">Shop: {shop?.name}</p>
-						<Link
-							to="/record-sale"
-							className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded font-medium hover:bg-accent"
-						>
-							<Plus size={20} />
-							Record Sale
-						</Link>
+						<div className="flex gap-3">
+							<Link
+								to="/record-sale"
+								className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded font-medium hover:bg-accent"
+							>
+								<Plus size={20} />
+								Record Sale
+							</Link>
+							<Link
+								to="/sales-history"
+								className="inline-flex items-center gap-2 px-6 py-3 bg-surface border border-border text-text rounded font-medium hover:bg-border"
+							>
+								<History size={20} />
+								Sales History
+							</Link>
+						</div>
 					</div>
 				} />
 				<Route path="/record-sale" element={<RecordSale />} />
+				<Route path="/sales-history" element={<SalesHistory />} />
 			</Routes>
 		</BrowserRouter>
 	);
