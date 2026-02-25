@@ -1,12 +1,33 @@
 import { useState } from 'react';
 import { useSales } from '@/hooks/useDatabase';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Download, FileText } from 'lucide-react';
+import { exportSalesToCSV, exportExpensesToCSV, exportDebtsToCSV, exportSalesToPDF, exportExpensesToPDF, exportDebtsToPDF } from '@/lib/export';
+import { useNotification } from '@/hooks/useNotification';
 
 type ViewType = 'week' | 'month';
 
 export function Analytics() {
 	const [view, setView] = useState<ViewType>('week');
 	const { data: allSales } = useSales();
+	const { showSuccess, showError } = useNotification();
+
+	const handleExport = async (type: 'csv' | 'pdf', entity: 'sales' | 'expenses' | 'debts') => {
+		try {
+			if (type === 'csv') {
+				if (entity === 'sales') await exportSalesToCSV();
+				else if (entity === 'expenses') await exportExpensesToCSV();
+				else await exportDebtsToCSV();
+			} else {
+				if (entity === 'sales') await exportSalesToPDF();
+				else if (entity === 'expenses') await exportExpensesToPDF();
+				else await exportDebtsToPDF();
+			}
+			showSuccess(`${entity} exported as ${type.toUpperCase()}`);
+		} catch (error) {
+			showError('Export failed');
+		}
+	};
 
 	const getLast7Days = () => {
 		const days = [];
@@ -70,7 +91,37 @@ export function Analytics() {
 
 	return (
 		<div className="container mx-auto px-4 lg:px-0 py-6">
-			<h1 className="text-2xl font-bold text-text mb-6">Analytics</h1>
+			<div className="flex items-center justify-between mb-6">
+				<h1 className="text-2xl font-bold text-text">Analytics</h1>
+				<div className="flex gap-2">
+					<div className="relative group">
+						<button className="px-4 py-2 bg-secondary text-white rounded flex items-center gap-2">
+							<Download size={18} />
+							Export
+						</button>
+						<div className="hidden group-hover:block absolute right-0 mt-1 bg-surface border border-border rounded shadow-lg z-10 min-w-[200px]">
+							<button onClick={() => handleExport('csv', 'sales')} className="w-full px-4 py-2 text-left hover:bg-bg flex items-center gap-2">
+								<FileText size={16} /> Sales CSV
+							</button>
+							<button onClick={() => handleExport('pdf', 'sales')} className="w-full px-4 py-2 text-left hover:bg-bg flex items-center gap-2">
+								<FileText size={16} /> Sales PDF
+							</button>
+							<button onClick={() => handleExport('csv', 'expenses')} className="w-full px-4 py-2 text-left hover:bg-bg flex items-center gap-2">
+								<FileText size={16} /> Expenses CSV
+							</button>
+							<button onClick={() => handleExport('pdf', 'expenses')} className="w-full px-4 py-2 text-left hover:bg-bg flex items-center gap-2">
+								<FileText size={16} /> Expenses PDF
+							</button>
+							<button onClick={() => handleExport('csv', 'debts')} className="w-full px-4 py-2 text-left hover:bg-bg flex items-center gap-2">
+								<FileText size={16} /> Debts CSV
+							</button>
+							<button onClick={() => handleExport('pdf', 'debts')} className="w-full px-4 py-2 text-left hover:bg-bg flex items-center gap-2">
+								<FileText size={16} /> Debts PDF
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
 			<div className="grid lg:grid-cols-3 gap-6">
 				{/* Left Panel - Chart */}
