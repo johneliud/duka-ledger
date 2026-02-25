@@ -16,7 +16,7 @@ This is an offline-first shop bookkeeper that serves as a simple sales & expense
    ```
 
 3. Configure environment variables:
-   - Create `.env.local` with your Supabase credentials and JWT secret
+   - Create `.env` with your Supabase credentials and JWT secret
 
 4. Start the backend server:
    ```bash
