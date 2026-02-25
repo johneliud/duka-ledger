@@ -37,7 +37,7 @@ export function SyncBadge() {
 		if (!isOnline) return { icon: AlertCircle, text: 'Offline', color: 'text-primary', bgColor: 'bg-primary/10' };
 		if (isSyncing) return { icon: RefreshCw, text: 'Syncing...', color: 'text-accent', bgColor: 'bg-accent/10' };
 		if (pendingCount > 0) return { icon: Clock, text: `${pendingCount} pending`, color: 'text-accent', bgColor: 'bg-accent/10' };
-		return { icon: CircleCheck, text: 'All synced', color: 'text-secondary', bgColor: 'bg-secondary/10' };
+		return { icon: CircleCheck, text: 'Synced', color: 'text-secondary', bgColor: 'bg-secondary/10' };
 	};
 
 	const status = getSyncStatus();
