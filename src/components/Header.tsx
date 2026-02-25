@@ -20,6 +20,7 @@ export function Header() {
 		{ name: 'Expenses', path: '/expenses', tour: 'expenses' },
 		{ name: 'Debt Book', path: '/debt-book', tour: 'debt' },
 		{ name: 'Analytics', path: '/analytics', tour: 'reports' },
+		{ name: 'Settings', path: '/settings', tour: 'settings' },
 	];
 
 	return (
