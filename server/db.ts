@@ -1,13 +1,6 @@
-import { Pool } from "pg";
-import dns from "dns";
+import { createClient } from "@supabase/supabase-js";
 
-dns.setDefaultResultOrder('ipv4first');
+const supabaseUrl = process.env.VITE_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-export const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  ssl: { rejectUnauthorized: false }
-});
+export const supabase = createClient(supabaseUrl, supabaseKey);

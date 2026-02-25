@@ -1,10 +1,13 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import authRoutes from "./routes/auth.ts";
 import syncRoutes from "./routes/sync.ts";
 
-if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD) {
-  throw new Error("Database connection details are not defined");
+dotenv.config();
+
+if (!process.env.SUPABASE_DB_URL) {
+  throw new Error("Database connection URL are not defined");
 }
 
 const app = express();
