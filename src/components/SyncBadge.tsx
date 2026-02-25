@@ -48,10 +48,10 @@ export function SyncBadge() {
 			{/* Badge */}
 			<button
 				onClick={() => setShowDrawer(true)}
-				className={`fixed top-24 right-4 z-30 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg ${status.bgColor} ${status.color} flex items-center gap-2`}
+				className={`p-2 rounded-lg transition-all ${status.bgColor} ${status.color}`}
+				aria-label="Sync status"
 			>
-				<Icon size={16} className={isSyncing ? 'animate-spin' : ''} />
-				{status.text}
+				<Icon size={20} className={isSyncing ? 'animate-spin' : ''} />
 			</button>
 
 			{/* Drawer */}
