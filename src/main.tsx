@@ -6,6 +6,7 @@ import { registerSW } from 'virtual:pwa-register'
 import { db } from './db/powersync'
 import { AuthProvider } from './lib/AuthProvider'
 import { NotificationProvider } from './lib/NotificationProvider'
+import { SettingsProvider } from './lib/SettingsContext'
 
 const updateSW = registerSW({
 	onNeedRefresh() {
@@ -34,7 +35,9 @@ function Root() {
 	return (
 		<NotificationProvider>
 			<AuthProvider>
-				<App />
+				<SettingsProvider>
+					<App />
+				</SettingsProvider>
 			</AuthProvider>
 		</NotificationProvider>
 	)
