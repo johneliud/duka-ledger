@@ -68,7 +68,6 @@ function App() {
 	return (
 		<BrowserRouter>
 			<Header />
-			{isAuthenticated && <SyncBadge />}
 			{isAuthenticated && storageInfo?.isWarning && (
 				<StorageWarning
 					percentUsed={storageInfo.percentUsed}
