@@ -1,6 +1,8 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { OfflineOnboarding } from "@/components/OfflineOnboarding";
 import { SyncBadge } from "@/components/SyncBadge";
 import { Header } from "@/components/Header";
 import { LoginModal } from "@/components/LoginModal";
@@ -19,6 +21,7 @@ import { Landing } from "@/pages/Landing";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
 import { useStorageQuota } from "@/hooks/useStorageQuota";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 type AuthScreen = 'landing' | 'login' | 'register' | 'join';
 
@@ -26,8 +29,15 @@ function App() {
 	const { isAuthenticated, login, register, joinShop } = useAuth();
 	const { showSuccess, showError } = useNotification();
 	const storageInfo = useStorageQuota();
+	const { isOnline } = useNetworkStatus();
 	const [authScreen, setAuthScreen] = useState<AuthScreen>('landing');
 	const [isLoading, setIsLoading] = useState(false);
+	const [hasSession, setHasSession] = useState(false);
+
+	useEffect(() => {
+		const session = localStorage.getItem('duka_session');
+		setHasSession(!!session);
+	}, [isAuthenticated]);
 
 	const handleLogin = async (idNumber: string, pin: string) => {
 		setIsLoading(true);
@@ -35,7 +45,12 @@ function App() {
 			await login(idNumber, pin);
 			showSuccess('Login successful!');
 		} catch (err) {
-			showError(err instanceof Error ? err.message : 'Login failed');
+			const message = err instanceof Error ? err.message : 'Login failed';
+			if (!isOnline) {
+				showError('Cannot login while offline. Please connect to the internet.');
+			} else {
+				showError(message);
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -47,7 +62,12 @@ function App() {
 			await register(name, idNumber, pin, shopName);
 			showSuccess('Shop created successfully!');
 		} catch (err) {
-			showError(err instanceof Error ? err.message : 'Registration failed');
+			const message = err instanceof Error ? err.message : 'Registration failed';
+			if (!isOnline) {
+				showError('Cannot register while offline. Please connect to the internet.');
+			} else {
+				showError(message);
+			}
 		} finally {
 			setIsLoading(false);
 		}
@@ -59,22 +79,30 @@ function App() {
 			await joinShop(name, idNumber, pin, inviteCode);
 			showSuccess('Joined shop successfully!');
 		} catch (err) {
-			showError(err instanceof Error ? err.message : 'Failed to join shop');
+			const message = err instanceof Error ? err.message : 'Failed to join shop';
+			if (!isOnline) {
+				showError('Cannot join shop while offline. Please connect to the internet.');
+			} else {
+				showError(message);
+			}
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	return (
-		<BrowserRouter>
-			<Header />
-			{isAuthenticated && storageInfo?.isWarning && (
-				<StorageWarning
-					percentUsed={storageInfo.percentUsed}
-					isCritical={storageInfo.isCritical}
-				/>
-			)}
-			{!isAuthenticated ? (
+		<ErrorBoundary>
+			<BrowserRouter>
+				<Header />
+				{isAuthenticated && storageInfo?.isWarning && (
+					<StorageWarning
+						percentUsed={storageInfo.percentUsed}
+						isCritical={storageInfo.isCritical}
+					/>
+				)}
+				{!isAuthenticated && !isOnline && !hasSession ? (
+					<OfflineOnboarding />
+				) : !isAuthenticated ? (
 				<>
 					<Landing 
 						onGetStarted={() => setAuthScreen('register')}
@@ -118,7 +146,8 @@ function App() {
 					<Route path="/seed" element={<SeedData />} />
 				</Routes>
 			)}
-		</BrowserRouter>
+			</BrowserRouter>
+		</ErrorBoundary>
 	);
 }
 
