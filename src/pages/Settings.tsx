@@ -1,8 +1,16 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useSettings } from "@/lib/SettingsContext";
-import { Copy, Check, AlertTriangle, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { Copy, Check, AlertTriangle, RotateCcw, Users } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+
+interface ShopMember {
+  id: string;
+  name: string;
+  id_number: string;
+  role: string;
+  joined_at: string;
+}
 
 export function Settings() {
   const { user, shop } = useAuth();
@@ -11,6 +19,35 @@ export function Settings() {
   // const { t, i18n } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [threshold, setThreshold] = useState(lowStockThreshold.toString());
+  const [members, setMembers] = useState<ShopMember[]>([]);
+  const [loadingMembers, setLoadingMembers] = useState(true);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      if (!shop?.id) return;
+      
+      try {
+        const API_URL = import.meta.env.VITE_API_URL;
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/api/shop/members`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setMembers(data.members || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch members:', error);
+      } finally {
+        setLoadingMembers(false);
+      }
+    };
+
+    fetchMembers();
+  }, [shop?.id]);
 
   const copyInviteCode = async () => {
     if (shop?.invite_code) {
@@ -108,6 +145,33 @@ export function Settings() {
                 </div>
               </div>
             </div>
+          </section>
+
+          {/* Shop Members */}
+          <section className="bg-surface border border-border rounded-lg p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Users size={20} className="text-primary" />
+              <h2 className="text-xl font-semibold text-text">Shop Members</h2>
+            </div>
+            {loadingMembers ? (
+              <p className="text-muted text-sm">Loading members...</p>
+            ) : members.length === 0 ? (
+              <p className="text-muted text-sm">No members yet. Share your invite code to add members.</p>
+            ) : (
+              <div className="space-y-3">
+                {members.map((member) => (
+                  <div key={member.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                    <div>
+                      <p className="text-text font-medium">{member.name}</p>
+                      <p className="text-sm text-muted">{member.id_number}</p>
+                    </div>
+                    <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary capitalize">
+                      {member.role} ||Member
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         </div>
 
