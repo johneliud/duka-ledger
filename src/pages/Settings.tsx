@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 export function Settings() {
   const { user, shop } = useAuth();
   const { lowStockThreshold, setLowStockThreshold } = useSettings();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  // const { t, i18n } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [threshold, setThreshold] = useState(lowStockThreshold.toString());
 
@@ -28,10 +29,10 @@ export function Settings() {
     }
   };
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-    localStorage.setItem('language', lng);
-  };
+  // const changeLanguage = (lng: string) => {
+  //   i18n.changeLanguage(lng);
+  //   localStorage.setItem('language', lng);
+  // };
 
   const restartTour = () => {
     if (user) {
@@ -135,7 +136,7 @@ export function Settings() {
           <section className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-xl font-semibold text-text mb-4">{t('settings.appSettings')}</h2>
             <div className="space-y-4">
-              <div>
+              {/* <div>
                 <label htmlFor="language" className="text-sm font-medium text-muted block mb-2">
                   {t('settings.language')}
                 </label>
@@ -148,7 +149,7 @@ export function Settings() {
                   <option value="en">English</option>
                   <option value="sw">Kiswahili</option>
                 </select>
-              </div>
+              </div> */}
               <div>
                 <label className="text-sm font-medium text-muted block mb-2">
                   {t('settings.restartTour')}
