@@ -4,6 +4,7 @@ interface User {
 	id: string;
 	name: string;
 	id_number: string;
+	role?: string;
 }
 
 interface Shop {
