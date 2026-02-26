@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.ts";
 import syncRoutes from "./routes/sync.ts";
+import shopRoutes from "./routes/shop.ts";
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/sync", syncRoutes);
+app.use("/api/shop", shopRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
