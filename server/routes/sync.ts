@@ -1,5 +1,8 @@
 import { Router, Request, Response } from "express";
 import { supabase } from "../db.ts";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const router = Router();
 

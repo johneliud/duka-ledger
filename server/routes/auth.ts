@@ -2,6 +2,9 @@ import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { supabase } from "../db.ts";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const router = Router();
 
