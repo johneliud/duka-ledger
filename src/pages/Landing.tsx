@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Zap, LayoutDashboard, Users, ArrowRight, TrendingUp, Package, Receipt } from "lucide-react";
 import { Footer } from "@/components/Footer";
+import { useTranslation } from 'react-i18next';
 
 interface LandingProps {
   onGetStarted: () => void;
@@ -8,15 +9,16 @@ interface LandingProps {
   isAuthenticated?: boolean;
 }
 
-const carouselItems = [
-	{ icon: TrendingUp, title: 'Track Sales', description: 'Record every transaction instantly, even offline' },
-	{ icon: Package, title: 'Manage Inventory', description: 'Monitor stock levels and get low stock alerts' },
-	{ icon: Receipt, title: 'Track Expenses', description: 'Keep tabs on all business expenses in one place' },
-	{ icon: Users, title: 'Debt Book', description: 'Manage customer credit and payment tracking' },
-];
-
 export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps) {
+	const { t } = useTranslation();
 	const [currentSlide, setCurrentSlide] = useState(0);
+
+	const carouselItems = [
+		{ icon: TrendingUp, title: t('landing.carousel.trackSales'), description: t('landing.carousel.trackSalesDesc') },
+		{ icon: Package, title: t('landing.carousel.manageInventory'), description: t('landing.carousel.manageInventoryDesc') },
+		{ icon: Receipt, title: t('landing.carousel.trackExpenses'), description: t('landing.carousel.trackExpensesDesc') },
+		{ icon: Users, title: t('landing.carousel.debtBook'), description: t('landing.carousel.debtBookDesc') },
+	];
 
 	useEffect(() => {
 		const timer = setInterval(() => {
@@ -35,13 +37,10 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
 							{/* Left Panel - Text */}
 							<div>
 								<h1 className="text-5xl lg:text-6xl font-bold text-text mb-6 tracking-tight">
-									Your Shop's Entire <span className="text-primary">Ledger</span>,
-									Digitized.
+									{t('landing.hero.title')} <span className="text-primary">{t('landing.hero.ledger')}</span>{t('landing.hero.digitized')}
 								</h1>
 								<p className="text-lg text-muted mb-10">
-									Track sales, manage inventory, and monitor debts effortlessly.
-									Built for the market, designed to work everywhere—even without
-									internet.
+									{t('landing.hero.subtitle')}
 								</p>
 								{!isAuthenticated ? (
 									<div className="flex flex-col sm:flex-row gap-4">
@@ -49,14 +48,14 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
 											onClick={onGetStarted}
 											className="px-8 py-4 bg-primary text-bg rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-transform active:scale-95 shadow-lg shadow-primary/20"
 										>
-											Get Started for Free
+											{t('landing.hero.getStarted')}
 											<ArrowRight size={20} />
 										</button>
 										<button
 											onClick={onLogin}
 											className="px-8 py-4 bg-surface text-text border border-border rounded-xl font-bold text-lg hover:bg-bg transition-colors"
 										>
-											Sign In
+											{t('landing.hero.signIn')}
 										</button>
 									</div>
 								) : (
@@ -64,7 +63,7 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
 										onClick={() => window.location.href = '/dashboard'}
 										className="px-8 py-4 bg-primary text-bg rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-transform active:scale-95 shadow-lg shadow-primary/20"
 									>
-										Proceed to Dashboard
+										{t('landing.hero.dashboard')}
 										<ArrowRight size={20} />
 									</button>
 								)}
@@ -111,7 +110,7 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
         <section className="py-20 bg-surface border-y border-border">
           <div className="container mx-auto px-4 xl:px-0">
             <h2 className="text-3xl font-bold text-text text-center mb-16">
-              Built for the Modern Shop Owner
+              {t('landing.features.title')}
             </h2>
             <div className="grid md:grid-cols-3 gap-12">
               <div className="flex flex-col items-center text-center p-6">
@@ -119,11 +118,10 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
                   <Zap size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-text mb-3">
-                  Offline-First
+                  {t('landing.features.offline')}
                 </h3>
                 <p className="text-muted">
-                  Never let a poor connection stop your business. Record sales
-                  offline and sync automatically when you're back online.
+                  {t('landing.features.offlineDesc')}
                 </p>
               </div>
 
@@ -132,11 +130,10 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
                   <LayoutDashboard size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-text mb-3">
-                  Clear Insights
+                  {t('landing.features.insights')}
                 </h3>
                 <p className="text-muted">
-                  Get a bird's-eye view of your profit, expenses, and stock
-                  levels. Make informed decisions with real-time data.
+                  {t('landing.features.insightsDesc')}
                 </p>
               </div>
 
@@ -145,11 +142,10 @@ export function Landing({ onGetStarted, onLogin, isAuthenticated }: LandingProps
                   <Users size={32} />
                 </div>
                 <h3 className="text-xl font-bold text-text mb-3">
-                  Shop Centric
+                  {t('landing.features.shopCentric')}
                 </h3>
                 <p className="text-muted">
-                  Invite staff to your shop. Data stays with the business,
-                  ensuring you never lose a record even if someone leaves.
+                  {t('landing.features.shopCentricDesc')}
                 </p>
               </div>
             </div>
