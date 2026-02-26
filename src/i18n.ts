@@ -40,6 +40,36 @@ const resources = {
       'tour.debt': 'Manage customer debts and credit transactions in your debt book.',
       'tour.reports': 'Generate detailed analytics and reports to make informed business decisions.',
       'tour.complete': 'That\'s it! You\'re ready to start. All features work offline and sync when you\'re back online.',
+      
+      // Landing Page
+      'landing.hero.title': 'Your Shop\'s Entire',
+      'landing.hero.ledger': 'Ledger',
+      'landing.hero.digitized': ', Digitized.',
+      'landing.hero.subtitle': 'Track sales, manage inventory, and monitor debts effortlessly. Built for the market, designed to work everywhere—even without internet.',
+      'landing.hero.getStarted': 'Get Started for Free',
+      'landing.hero.signIn': 'Sign In',
+      'landing.hero.dashboard': 'Proceed to Dashboard',
+      
+      'landing.carousel.trackSales': 'Track Sales',
+      'landing.carousel.trackSalesDesc': 'Record every transaction instantly, even offline',
+      'landing.carousel.manageInventory': 'Manage Inventory',
+      'landing.carousel.manageInventoryDesc': 'Monitor stock levels and get low stock alerts',
+      'landing.carousel.trackExpenses': 'Track Expenses',
+      'landing.carousel.trackExpensesDesc': 'Keep tabs on all business expenses in one place',
+      'landing.carousel.debtBook': 'Debt Book',
+      'landing.carousel.debtBookDesc': 'Manage customer credit and payment tracking',
+      
+      'landing.features.title': 'Built for the Modern Shop Owner',
+      'landing.features.offline': 'Offline-First',
+      'landing.features.offlineDesc': 'Never let a poor connection stop your business. Record sales offline and sync automatically when you\'re back online.',
+      'landing.features.insights': 'Clear Insights',
+      'landing.features.insightsDesc': 'Get a bird\'s-eye view of your profit, expenses, and stock levels. Make informed decisions with real-time data.',
+      'landing.features.shopCentric': 'Shop Centric',
+      'landing.features.shopCentricDesc': 'Invite staff to your shop. Data stays with the business, ensuring you never lose a record even if someone leaves.',
+      
+      // Footer
+      'footer.tagline': 'Empowering small businesses with a simple, digital, and offline-first ledger for tracking sales and inventory.',
+      'footer.rights': 'All rights reserved.',
     },
   },
   sw: {
@@ -80,6 +110,36 @@ const resources = {
       'tour.debt': 'Simamia madeni ya wateja na miamala ya mkopo katika kitabu chako cha madeni.',
       'tour.reports': 'Tengeneza takwimu na ripoti za kina ili kufanya maamuzi sahihi ya biashara.',
       'tour.complete': 'Hivyo ndivyo! Uko tayari kuanza. Vipengele vyote vinafanya kazi bila mtandao na kusawazisha unapokuwa mtandaoni tena.',
+      
+      // Landing Page
+      'landing.hero.title': 'Kitabu Chako Chote cha',
+      'landing.hero.ledger': 'Duka',
+      'landing.hero.digitized': ', Kimeandikwa Kidijitali.',
+      'landing.hero.subtitle': 'Fuatilia mauzo, simamia hesabu, na angalia madeni bila shida. Imejengwa kwa ajili ya soko, imeundwa kufanya kazi popote—hata bila mtandao.',
+      'landing.hero.getStarted': 'Anza Bure',
+      'landing.hero.signIn': 'Ingia',
+      'landing.hero.dashboard': 'Endelea kwa Dashibodi',
+      
+      'landing.carousel.trackSales': 'Fuatilia Mauzo',
+      'landing.carousel.trackSalesDesc': 'Rekodi kila muamala mara moja, hata bila mtandao',
+      'landing.carousel.manageInventory': 'Simamia Hesabu',
+      'landing.carousel.manageInventoryDesc': 'Angalia viwango vya hisa na upate tahadhari za bidhaa chache',
+      'landing.carousel.trackExpenses': 'Fuatilia Matumizi',
+      'landing.carousel.trackExpensesDesc': 'Weka macho kwenye matumizi yote ya biashara mahali pamoja',
+      'landing.carousel.debtBook': 'Kitabu cha Madeni',
+      'landing.carousel.debtBookDesc': 'Simamia mkopo wa wateja na ufuatiliaji wa malipo',
+      
+      'landing.features.title': 'Imejengwa kwa Mmiliki wa Duka wa Kisasa',
+      'landing.features.offline': 'Bila Mtandao Kwanza',
+      'landing.features.offlineDesc': 'Usiwahi kuruhusu muunganisho mbaya kusimamisha biashara yako. Rekodi mauzo bila mtandao na sawazisha moja kwa moja unapokuwa mtandaoni tena.',
+      'landing.features.insights': 'Maarifa Wazi',
+      'landing.features.insightsDesc': 'Pata mtazamo wa jumla wa faida, matumizi, na viwango vya hisa yako. Fanya maamuzi sahihi kwa data ya wakati halisi.',
+      'landing.features.shopCentric': 'Duka Lenye Umuhimu',
+      'landing.features.shopCentricDesc': 'Alika wafanyakazi kwenye duka lako. Data inabaki na biashara, ikihakikisha hupotezi rekodi hata kama mtu anaondoka.',
+      
+      // Footer
+      'footer.tagline': 'Kuwezesha biashara ndogo na kifaa rahisi, cha kidijitali, na cha bila mtandao kwa ajili ya kufuatilia mauzo na hesabu.',
+      'footer.rights': 'Haki zote zimehifadhiwa.',
     },
   },
 };
