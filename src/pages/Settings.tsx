@@ -166,7 +166,7 @@ export function Settings() {
                       <p className="text-sm text-muted">{member.id_number}</p>
                     </div>
                     <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary capitalize">
-                      {member.role} ||Member
+                      {member.role}
                     </span>
                   </div>
                 ))}

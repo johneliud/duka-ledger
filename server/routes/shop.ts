@@ -9,6 +9,7 @@ const authenticate = (req: Request, res: Response, next: () => void) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   
   if (!token) {
+    console.log('No token provided');
     return res.status(401).json({ error: 'No token provided' });
   }
 
@@ -16,7 +17,8 @@ const authenticate = (req: Request, res: Response, next: () => void) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { shop_id: string; user_id: string };
     (req as unknown as { user: typeof decoded }).user = decoded;
     next();
-  } catch {
+  } catch (error) {
+    console.error('Token verification failed:', error);
     return res.status(401).json({ error: 'Invalid token' });
   }
 };
