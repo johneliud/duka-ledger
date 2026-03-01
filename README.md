@@ -8,6 +8,8 @@ A local-first Progressive Web App (PWA) that enables small business owners in Ke
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18-blue)](https://react.dev/)
 
+![Duka Ledger Screenshot](public/imgs/Screenshot.jpg)
+
 ---
 
 ## Problem Statement
