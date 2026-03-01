@@ -45,7 +45,7 @@ const resources = {
       'landing.hero.title': 'Your Shop\'s Entire',
       'landing.hero.ledger': 'Ledger',
       'landing.hero.digitized': ', Digitized.',
-      'landing.hero.subtitle': 'Track sales, manage inventory, and monitor debts effortlessly. Built for the market, designed to work everywhere—even without internet.',
+      'landing.hero.subtitle': 'Track sales, manage inventory, and monitor debts effortlessly. Built for the market, designed to work everywhere even without internet.',
       'landing.hero.getStarted': 'Get Started for Free',
       'landing.hero.signIn': 'Sign In',
       'landing.hero.dashboard': 'Proceed to Dashboard',
