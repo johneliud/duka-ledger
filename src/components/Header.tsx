@@ -2,17 +2,17 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, Sun, Moon, SquareArrowRightExit } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { SyncBadge } from '@/components/SyncBadge';
 import { useTranslation } from 'react-i18next';
 
 export function Header() {
 	const { logout, isAuthenticated } = useAuth();
+	const { isDarkMode, toggleTheme } = useTheme();
 	const { t } = useTranslation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const [isDarkMode, setIsDarkMode] = useState(false);
 
 	const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-	const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
 	const navLinks = [
 		{ name: t('nav.dashboard'), path: '/dashboard', tour: 'dashboard' },
