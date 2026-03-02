@@ -57,68 +57,216 @@ export async function exportDebtsToCSV() {
 
 export async function exportSalesToPDF() {
 	const sales = await db.getAll<Sale>('SELECT * FROM sales ORDER BY created_at DESC LIMIT 50');
+	const products = await db.getAll<any>('SELECT id, name FROM products');
 	const doc = new jsPDF();
+	const shopName = localStorage.getItem('shop_name') || 'Duka Ledger';
 	
+	// Header with branding
+	doc.setFillColor(196, 98, 45);
+	doc.rect(0, 0, 210, 35, 'F');
+	doc.setTextColor(255, 255, 255);
+	doc.setFontSize(24);
+	doc.text('Duka Ledger', 14, 15);
+	doc.setFontSize(12);
+	doc.text(shopName, 14, 23);
 	doc.setFontSize(16);
-	doc.text('Sales Report', 14, 15);
-	doc.setFontSize(10);
-	doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 22);
+	doc.text('Sales Report', 14, 31);
 	
-	let y = 30;
+	doc.setTextColor(44, 26, 14);
+	doc.setFontSize(9);
+	doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 42);
+	doc.text(`Total Records: ${sales.length}`, 14, 47);
+	
+	// Table header
+	let y = 55;
+	doc.setFillColor(232, 216, 200);
+	doc.rect(14, y - 5, 182, 8, 'F');
+	doc.setDrawColor(158, 136, 120);
+	doc.setLineWidth(0.5);
+	doc.line(14, y - 5, 196, y - 5);
+	doc.line(14, y + 3, 196, y + 3);
+	
+	doc.setFontSize(10);
+	doc.text('#', 16, y);
+	doc.text('Product', 25, y);
+	doc.text('Qty', 85, y);
+	doc.text('Total', 105, y);
+	doc.text('Payment', 130, y);
+	doc.text('Date', 165, y);
+	
+	y += 8;
+	doc.setFontSize(8);
+	
+	const getProductName = (id: string) => products.find((p: any) => p.id === id)?.name || 'Unknown';
+	
 	sales.forEach((sale, i) => {
 		if (y > 270) {
 			doc.addPage();
 			y = 20;
 		}
-		doc.text(`${i + 1}. Qty: ${sale.quantity} | Total: KSh ${sale.total} | ${sale.payment_method}`, 14, y);
+		
+		doc.line(14, y - 3, 196, y - 3);
+		doc.text(`${i + 1}`, 16, y);
+		doc.text(getProductName(sale.product_id).substring(0, 25), 25, y);
+		doc.text(`${sale.quantity}`, 85, y);
+		doc.text(`${sale.total.toLocaleString()}`, 105, y);
+		doc.text(sale.payment_method, 130, y);
+		doc.text(new Date(sale.created_at).toLocaleDateString(), 165, y);
 		y += 7;
 	});
 	
-	doc.save('sales.pdf');
+	doc.line(14, y - 3, 196, y - 3);
+	
+	// Footer
+	const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
+	doc.setFillColor(232, 145, 58);
+	doc.rect(0, 285, 210, 12, 'F');
+	doc.setTextColor(255, 255, 255);
+	doc.setFontSize(11);
+	doc.text(`Total Sales: KSh ${totalSales.toLocaleString()}`, 14, 292);
+	
+	doc.save(`${shopName}_sales_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
 export async function exportExpensesToPDF() {
 	const expenses = await db.getAll<Expense>('SELECT * FROM expenses ORDER BY created_at DESC LIMIT 50');
 	const doc = new jsPDF();
+	const shopName = localStorage.getItem('shop_name') || 'Duka Ledger';
 	
+	// Header with branding
+	doc.setFillColor(196, 98, 45);
+	doc.rect(0, 0, 210, 35, 'F');
+	doc.setTextColor(255, 255, 255);
+	doc.setFontSize(24);
+	doc.text('Duka Ledger', 14, 15);
+	doc.setFontSize(12);
+	doc.text(shopName, 14, 23);
 	doc.setFontSize(16);
-	doc.text('Expenses Report', 14, 15);
-	doc.setFontSize(10);
-	doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 22);
+	doc.text('Expenses Report', 14, 31);
 	
-	let y = 30;
+	doc.setTextColor(44, 26, 14);
+	doc.setFontSize(9);
+	doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 42);
+	doc.text(`Total Records: ${expenses.length}`, 14, 47);
+	
+	// Table header
+	let y = 55;
+	doc.setFillColor(232, 216, 200);
+	doc.rect(14, y - 5, 182, 8, 'F');
+	doc.setDrawColor(158, 136, 120);
+	doc.setLineWidth(0.5);
+	doc.line(14, y - 5, 196, y - 5);
+	doc.line(14, y + 3, 196, y + 3);
+	
+	doc.setFontSize(10);
+	doc.text('#', 16, y);
+	doc.text('Category', 25, y);
+	doc.text('Amount', 70, y);
+	doc.text('Note', 105, y);
+	doc.text('Date', 165, y);
+	
+	y += 8;
+	doc.setFontSize(8);
+	
 	expenses.forEach((expense, i) => {
 		if (y > 270) {
 			doc.addPage();
 			y = 20;
 		}
-		doc.text(`${i + 1}. ${expense.category} | KSh ${expense.amount} | ${expense.note || ''}`, 14, y);
+		
+		doc.line(14, y - 3, 196, y - 3);
+		doc.text(`${i + 1}`, 16, y);
+		doc.text(expense.category, 25, y);
+		doc.text(`${expense.amount.toLocaleString()}`, 70, y);
+		doc.text(expense.note?.substring(0, 35) || '-', 105, y);
+		doc.text(new Date(expense.created_at).toLocaleDateString(), 165, y);
 		y += 7;
 	});
 	
-	doc.save('expenses.pdf');
+	doc.line(14, y - 3, 196, y - 3);
+	
+	// Footer
+	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+	doc.setFillColor(232, 145, 58);
+	doc.rect(0, 285, 210, 12, 'F');
+	doc.setTextColor(255, 255, 255);
+	doc.setFontSize(11);
+	doc.text(`Total Expenses: KSh ${totalExpenses.toLocaleString()}`, 14, 292);
+	
+	doc.save(`${shopName}_expenses_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
 export async function exportDebtsToPDF() {
 	const debts = await db.getAll<Debt>('SELECT * FROM debts ORDER BY updated_at DESC');
 	const doc = new jsPDF();
+	const shopName = localStorage.getItem('shop_name') || 'Duka Ledger';
 	
+	// Header with branding
+	doc.setFillColor(196, 98, 45);
+	doc.rect(0, 0, 210, 35, 'F');
+	doc.setTextColor(255, 255, 255);
+	doc.setFontSize(24);
+	doc.text('Duka Ledger', 14, 15);
+	doc.setFontSize(12);
+	doc.text(shopName, 14, 23);
 	doc.setFontSize(16);
-	doc.text('Debts Report', 14, 15);
-	doc.setFontSize(10);
-	doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 22);
+	doc.text('Debt Book Report', 14, 31);
 	
-	let y = 30;
+	doc.setTextColor(44, 26, 14);
+	doc.setFontSize(9);
+	doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 42);
+	doc.text(`Total Records: ${debts.length}`, 14, 47);
+	
+	// Table header
+	let y = 55;
+	doc.setFillColor(232, 216, 200);
+	doc.rect(14, y - 5, 182, 8, 'F');
+	doc.setDrawColor(158, 136, 120);
+	doc.setLineWidth(0.5);
+	doc.line(14, y - 5, 196, y - 5);
+	doc.line(14, y + 3, 196, y + 3);
+	
+	doc.setFontSize(10);
+	doc.text('#', 16, y);
+	doc.text('Customer', 25, y);
+	doc.text('Phone', 75, y);
+	doc.text('Owed', 110, y);
+	doc.text('Paid', 140, y);
+	doc.text('Balance', 165, y);
+	
+	y += 8;
+	doc.setFontSize(8);
+	
 	debts.forEach((debt, i) => {
 		if (y > 270) {
 			doc.addPage();
 			y = 20;
 		}
-		doc.text(`${i + 1}. ${debt.customer_name} | Owed: KSh ${debt.amount_owed} | Paid: KSh ${debt.amount_paid}`, 14, y);
+		
+		doc.line(14, y - 3, 196, y - 3);
+		const balance = debt.amount_owed - debt.amount_paid;
+		doc.text(`${i + 1}`, 16, y);
+		doc.text(debt.customer_name.substring(0, 20), 25, y);
+		doc.text(debt.phone?.substring(0, 12) || '-', 75, y);
+		doc.text(`${debt.amount_owed.toLocaleString()}`, 110, y);
+		doc.text(`${debt.amount_paid.toLocaleString()}`, 140, y);
+		doc.text(`${balance.toLocaleString()}`, 165, y);
 		y += 7;
 	});
 	
-	doc.save('debts.pdf');
+	doc.line(14, y - 3, 196, y - 3);
+	
+	// Footer
+	const totalOwed = debts.reduce((sum, d) => sum + d.amount_owed, 0);
+	const totalPaid = debts.reduce((sum, d) => sum + d.amount_paid, 0);
+	const pending = totalOwed - totalPaid;
+	doc.setFillColor(232, 145, 58);
+	doc.rect(0, 285, 210, 12, 'F');
+	doc.setTextColor(255, 255, 255);
+	doc.setFontSize(11);
+	doc.text(`Total Owed: KSh ${totalOwed.toLocaleString()} | Paid: KSh ${totalPaid.toLocaleString()} | Pending: KSh ${pending.toLocaleString()}`, 14, 292);
+	
+	doc.save(`${shopName}_debts_${new Date().toISOString().split('T')[0]}.pdf`);
 }
 
 function downloadFile(content: string, filename: string, type: string) {
