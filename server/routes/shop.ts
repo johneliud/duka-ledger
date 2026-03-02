@@ -29,8 +29,9 @@ router.get("/members", authenticate, async (req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
       .from("shop_members")
-      .select("user_id, role, users!inner(id, name, id_number)")
-      .eq("shop_id", shop_id);
+      .select("user_id, role, joined_at, users!inner(id, name, id_number)")
+      .eq("shop_id", shop_id)
+      .order("joined_at", { ascending: true });
 
     if (error) throw error;
 
@@ -39,6 +40,7 @@ router.get("/members", authenticate, async (req: Request, res: Response) => {
       name: (m.users as unknown as { name: string }).name,
       id_number: (m.users as unknown as { id_number: string }).id_number,
       role: m.role,
+      joined_at: m.joined_at,
     }));
 
     res.json({ members });
