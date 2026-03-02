@@ -15,7 +15,11 @@ export function Dashboard() {
 
 	const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
 	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
-	const netProfit = totalSales - totalExpenses;
+	const costOfGoodsSold = sales.reduce((sum, s) => {
+		const product = products.find(p => p.id === s.product_id);
+		return sum + (product?.purchase_price || 0) * s.quantity;
+	}, 0);
+	const netProfit = totalSales - costOfGoodsSold - totalExpenses;
 	const pendingDebt = debts
 		.filter(d => d.status !== 'cleared')
 		.reduce((sum, d) => sum + (d.amount_owed - d.amount_paid), 0);
