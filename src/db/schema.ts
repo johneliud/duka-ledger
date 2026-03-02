@@ -4,7 +4,9 @@ const products = new Table({
 	shop_id: column.text,
 	created_by: column.text,
 	name: column.text,
+	purchase_price: column.real,
 	price: column.real,
+	description: column.text,
 	stock_count: column.integer,
 	updated_at: column.text,
 });
