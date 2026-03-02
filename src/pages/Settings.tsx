@@ -28,7 +28,14 @@ export function Settings() {
       
       try {
         const API_URL = import.meta.env.VITE_API_URL;
-        const token = localStorage.getItem('token');
+        const session = localStorage.getItem('duka_session');
+        const token = session ? JSON.parse(session).token : null;
+        
+        if (!token) {
+          setLoadingMembers(false);
+          return;
+        }
+        
         const response = await fetch(`${API_URL}/api/shop/members`, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -166,7 +173,7 @@ export function Settings() {
                       <p className="text-sm text-muted">{member.id_number}</p>
                     </div>
                     <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary capitalize">
-                      {member.role}
+                      {member.role === 'owner' ? 'Owner' : 'Member'}
                     </span>
                   </div>
                 ))}
