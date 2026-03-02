@@ -76,7 +76,7 @@ router.post("/register", async (req: Request, res: Response) => {
     if (userError) throw userError;
 
     // Generate invite code
-    const inviteCode = `DUKA-${Math.floor(1000 + Math.random() * 9000)}`;
+    const inviteCode = `DUKA-${Math.floor(100000 + Math.random() * 900000)}`;
 
     // Create shop
     const { data: newShop, error: shopError } = await supabase
@@ -147,7 +147,7 @@ router.post("/login", async (req: Request, res: Response) => {
     // Get shop membership
     const { data: membership, error: memberError } = await supabase
       .from("shop_members")
-      .select("shop_id, role, shops!inner(name)")
+      .select("shop_id, role, shops!inner(name, invite_code)")
       .eq("user_id", user.id)
       .maybeSingle();
 
@@ -157,7 +157,9 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "No shop found for this user" });
     }
 
-    const shopName = ((membership.shops as unknown as { name: string })?.name ?? "") as string;
+    const shopData = membership.shops as unknown as { name: string; invite_code: string };
+    const shopName = shopData?.name ?? "";
+    const inviteCode = shopData?.invite_code ?? "";
 
     // Generate JWT
     const token = jwt.sign(
@@ -169,7 +171,7 @@ router.post("/login", async (req: Request, res: Response) => {
     res.json({
       token,
       user: { id: user.id, name: user.name, id_number },
-      shop: { id: membership.shop_id, name: shopName },
+      shop: { id: membership.shop_id, name: shopName, invite_code: inviteCode },
       role: membership.role,
     });
   } catch (error) {
@@ -251,7 +253,7 @@ router.post("/join", async (req: Request, res: Response) => {
     res.status(201).json({
       token,
       user: { id: newUser.id, name, id_number },
-      shop: { id: shop.id, name: shop.name },
+      shop: { id: shop.id, name: shop.name, invite_code: invite_code },
       role: "member",
     });
   } catch (error) {
