@@ -11,11 +11,12 @@ export function JoinModal({ onJoin, onBack, isLoading }: JoinModalProps) {
 	const [name, setName] = useState('');
 	const [idNumber, setIdNumber] = useState('');
 	const [pin, setPin] = useState('');
+	const [confirmPin, setConfirmPin] = useState('');
 	const [inviteCode, setInviteCode] = useState('');
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (name && idNumber && pin.length === 4 && inviteCode) {
+		if (name && idNumber && pin.length === 4 && pin === confirmPin && inviteCode) {
 			onJoin(name, idNumber, pin, inviteCode);
 		}
 	};
@@ -81,7 +82,7 @@ export function JoinModal({ onJoin, onBack, isLoading }: JoinModalProps) {
 							/>
 						</div>
 
-						<div className="mb-6">
+						<div className="mb-4">
 							<label className="block text-text text-sm mb-2">Create Your PIN</label>
 							<input
 								type="password"
@@ -95,9 +96,26 @@ export function JoinModal({ onJoin, onBack, isLoading }: JoinModalProps) {
 							/>
 						</div>
 
+						<div className="mb-6">
+							<label className="block text-text text-sm mb-2">Confirm PIN</label>
+							<input
+								type="password"
+								inputMode="numeric"
+								maxLength={4}
+								value={confirmPin}
+								onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
+								className="w-full px-3 py-2 border border-border rounded-lg bg-bg text-text tracking-[0.5rem] focus:outline-none focus:ring-2 focus:ring-accent/20"
+								placeholder="••••"
+								required
+							/>
+							{pin && confirmPin && pin !== confirmPin && (
+								<p className="text-red-600 text-xs mt-1">PINs do not match</p>
+							)}
+						</div>
+
 						<button
 							type="submit"
-							disabled={isLoading || !name || !idNumber || pin.length !== 4 || !inviteCode}
+							disabled={isLoading || !name || !idNumber || pin.length !== 4 || pin !== confirmPin || !inviteCode}
 							className="w-full py-3 bg-accent text-bg rounded-lg font-bold disabled:opacity-50 mb-3 transition-colors hover:bg-accent/90"
 						>
 							{isLoading ? 'Joining...' : 'Join Shop'}
