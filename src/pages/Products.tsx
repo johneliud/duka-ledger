@@ -11,12 +11,14 @@ export function Products() {
 	const [editId, setEditId] = useState<string | null>(null);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
 	const [name, setName] = useState('');
+	const [purchasePrice, setPurchasePrice] = useState('');
 	const [price, setPrice] = useState('');
+	const [description, setDescription] = useState('');
 	const [stock, setStock] = useState('');
 
 	const handleSubmit = async () => {
-		if (!name.trim() || !price || parseFloat(price) <= 0 || !stock || parseInt(stock) < 0) {
-			showError('Please fill all fields correctly');
+		if (!name.trim() || !purchasePrice || parseFloat(purchasePrice) <= 0 || !price || parseFloat(price) <= 0 || !stock || parseInt(stock) < 0) {
+			showError('Please fill all required fields correctly');
 			return;
 		}
 
@@ -26,15 +28,15 @@ export function Products() {
 
 			if (editId) {
 				await db.execute(
-					`UPDATE products SET name = ?, price = ?, stock_count = ?, updated_at = datetime('now') WHERE id = ?`,
-					[name.trim(), parseFloat(price), parseInt(stock), editId]
+					`UPDATE products SET name = ?, purchase_price = ?, price = ?, description = ?, stock_count = ?, updated_at = datetime('now') WHERE id = ?`,
+					[name.trim(), parseFloat(purchasePrice), parseFloat(price), description.trim() || null, parseInt(stock), editId]
 				);
 				showSuccess('Product updated');
 			} else {
 				await db.execute(
-					`INSERT INTO products (id, shop_id, created_by, name, price, stock_count, updated_at)
-					VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
-					[crypto.randomUUID(), shopId, userId, name.trim(), parseFloat(price), parseInt(stock)]
+					`INSERT INTO products (id, shop_id, created_by, name, purchase_price, price, description, stock_count, updated_at)
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
+					[crypto.randomUUID(), shopId, userId, name.trim(), parseFloat(purchasePrice), parseFloat(price), description.trim() || null, parseInt(stock)]
 				);
 				showSuccess('Product added');
 			}
@@ -42,7 +44,9 @@ export function Products() {
 			setShowForm(false);
 			setEditId(null);
 			setName('');
+			setPurchasePrice('');
 			setPrice('');
+			setDescription('');
 			setStock('');
 		} catch (err) {
 			showError(err instanceof Error ? err.message : 'Failed to save product');
@@ -52,7 +56,9 @@ export function Products() {
 	const handleEdit = (product: typeof products[0]) => {
 		setEditId(product.id);
 		setName(product.name);
+		setPurchasePrice(product.purchase_price?.toString() || '');
 		setPrice(product.price.toString());
+		setDescription(product.description || '');
 		setStock(product.stock_count.toString());
 		setShowForm(true);
 	};
@@ -71,7 +77,9 @@ export function Products() {
 		setShowForm(false);
 		setEditId(null);
 		setName('');
+		setPurchasePrice('');
 		setPrice('');
+		setDescription('');
 		setStock('');
 	};
 
@@ -118,11 +126,19 @@ export function Products() {
 							</div>
 							<div className="space-y-2">
 								<div className="flex justify-between items-center">
-									<span className="text-sm text-muted">Price</span>
+									<span className="text-sm text-muted">Selling Price</span>
 									<span className="text-lg font-bold text-primary">
 										KSh {product.price.toLocaleString()}
 									</span>
 								</div>
+								{product.purchase_price && (
+									<div className="flex justify-between items-center">
+										<span className="text-sm text-muted">Profit/Unit</span>
+										<span className="text-sm font-medium text-green-600">
+											KSh {(product.price - product.purchase_price).toLocaleString()}
+										</span>
+									</div>
+								)}
 								<div className="flex justify-between items-center">
 									<span className="text-sm text-muted">Stock</span>
 									<span className={`font-medium ${product.stock_count < 5 ? 'text-accent' : 'text-text'}`}>
@@ -130,6 +146,11 @@ export function Products() {
 										{product.stock_count} units
 									</span>
 								</div>
+								{product.description && (
+									<p className="text-xs text-muted mt-2 pt-2 border-t border-border">
+										{product.description}
+									</p>
+								)}
 							</div>
 						</div>
 					))}
@@ -154,6 +175,18 @@ export function Products() {
 								/>
 							</div>
 							<div>
+								<label className="block text-sm font-medium text-text mb-1">Purchase Price (KSh)</label>
+								<input
+									type="number"
+									value={purchasePrice}
+									onChange={(e) => setPurchasePrice(e.target.value)}
+									placeholder="0"
+									min="0"
+									step="0.01"
+									className="w-full px-3 py-2 border border-border rounded bg-bg text-text"
+								/>
+							</div>
+							<div>
 								<label className="block text-sm font-medium text-text mb-1">Selling Price (KSh)</label>
 								<input
 									type="number"
@@ -163,6 +196,16 @@ export function Products() {
 									min="0"
 									step="0.01"
 									className="w-full px-3 py-2 border border-border rounded bg-bg text-text"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-text mb-1">Description (Optional)</label>
+								<textarea
+									value={description}
+									onChange={(e) => setDescription(e.target.value)}
+									placeholder="Additional details about the product"
+									rows={2}
+									className="w-full px-3 py-2 border border-border rounded bg-bg text-text resize-none"
 								/>
 							</div>
 							<div>
