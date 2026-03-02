@@ -32,5 +32,16 @@ export async function initializeSync() {
 	}
 }
 
-// Auto-initialize on import (can be called multiple times safely)
 initializeSync();
+
+// Keep Render server awake to prevent sleeps on free tier after every 10 minutes
+if (import.meta.env.VITE_API_URL) {
+	setInterval(async () => {
+		try {
+			await fetch(`${import.meta.env.VITE_API_URL}/health`);
+			console.log('Awake');
+		} catch (error) {
+			console.error('Sleeping. Error:', error);
+		}
+	}, 10 * 60 * 1000);
+}
