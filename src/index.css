@@ -52,6 +52,11 @@
   font-family: var(--font-family-sans);
 }
 
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
 a, button {
 	cursor: pointer;
 }
