@@ -12,7 +12,9 @@ type Product = {
 	shop_id: string;
 	created_by: string;
 	name: string;
+	purchase_price: number;
 	price: number;
+	description: string | null;
 	stock_count: number;
 	updated_at: string;
 };
