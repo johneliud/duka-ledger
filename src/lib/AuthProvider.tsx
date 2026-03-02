@@ -5,7 +5,7 @@ import { connector } from '@/db/connector';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<{ id: string; name: string; id_number: string } | null>(null);
-	const [shop, setShop] = useState<{ id: string; name: string } | null>(null);
+	const [shop, setShop] = useState<{ id: string; name: string; invite_code?: string } | null>(null);
 	const [role, setRole] = useState<string | null>(null);
 	const [token, setToken] = useState<string | null>(null);
 
