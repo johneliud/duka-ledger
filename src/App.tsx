@@ -17,7 +17,6 @@ import { Expenses } from "@/pages/Expenses";
 import { DebtBook } from "@/pages/DebtBook";
 import { Analytics } from "@/pages/Analytics";
 import { Settings } from "@/pages/Settings";
-import { SeedData } from "@/pages/SeedData";
 import { Landing } from "@/pages/Landing";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/hooks/useNotification";
@@ -146,7 +145,6 @@ function App() {
 					<Route path="/debt-book" element={<DebtBook />} />
 					<Route path="/analytics" element={<Analytics />} />
 					<Route path="/settings" element={<Settings />} />
-					<Route path="/seed" element={<SeedData />} />
 				</Routes>
 			)}
 			</BrowserRouter>
