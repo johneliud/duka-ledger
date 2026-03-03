@@ -2,6 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { AuthContext } from './AuthContext';
 import { login as apiLogin, register as apiRegister, joinShop as apiJoinShop } from './auth';
 import { connector } from '@/db/connector';
+import { initializeSync } from '@/db/powersync';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<{ id: string; name: string; id_number: string } | null>(null);
@@ -19,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				setRole(role);
 				setToken(token);
 				connector.setCredentials(shop.id, user.id);
+				initializeSync(shop.id);
 			} catch (e) {
 				console.error('Failed to restore session:', e);
 				localStorage.removeItem('duka_session');
@@ -44,6 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		
 		saveSession(user, shop, role, token);
 		connector.setCredentials(shop.id, user.id);
+		await initializeSync(shop.id);
 	};
 
 	const register = async (name: string, idNumber: string, pin: string, shopName: string) => {
@@ -60,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		
 		saveSession(user, shop, role, token);
 		connector.setCredentials(shop.id, user.id);
+		await initializeSync(shop.id);
 	};
 
 	const joinShop = async (name: string, idNumber: string, pin: string, inviteCode: string) => {
@@ -76,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		
 		saveSession(user, shop, role, token);
 		connector.setCredentials(shop.id, user.id);
+		await initializeSync(shop.id);
 	};
 
 	const logout = () => {
