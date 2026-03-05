@@ -32,6 +32,22 @@ export function getDatabase(shopId?: string): PowerSyncDatabase {
 	return dbInstance;
 }
 
+export function disconnectFromShop() {
+	dbInstance?.disconnect();
+	dbInstance = null;
+	currentShopId = null;
+	console.log('[DB] Disconnected from shop, data preserved');
+}
+
+export function clearShopData() {
+	if (dbInstance) {
+		console.log('[DB] Clearing all shop data');
+		dbInstance.disconnectAndClear();
+	}
+	dbInstance = null;
+	currentShopId = null;
+}
+
 // Export db getter
 export const db = new Proxy({} as PowerSyncDatabase, {
 	get(_target, prop) {
