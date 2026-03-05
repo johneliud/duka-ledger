@@ -67,9 +67,13 @@ export async function initializeSync(shopId?: string) {
 	}
 	
 	try {
+		console.log('[Sync] Connecting to PowerSync with endpoint:', import.meta.env.VITE_POWERSYNC_URL);
 		await database.connect(connector);
 		syncInitialized = true;
-		console.log('[Sync] PowerSync connected');
+		console.log('[Sync] PowerSync connected successfully');
+		
+		// Log status changes
+		database.currentStatus;
 		
 		// Trigger sync on reconnect
 		window.addEventListener('online', () => {
@@ -78,6 +82,29 @@ export async function initializeSync(shopId?: string) {
 				console.log('[Sync] Ready to sync');
 			});
 		});
+		
+		// Manual sync trigger with detailed status
+		setTimeout(async () => {
+			console.log('[Sync] Triggering manual sync check...');
+			try {
+				await database.waitForReady();
+				const status = database.currentStatus;
+				console.log('[Sync] Sync status after waitForReady:', {
+					connected: status?.connected,
+					connecting: status?.connecting,
+					lastSyncedAt: status?.lastSyncedAt,
+				});
+				
+				// Check local data
+				const products = await database.getAll<{count: number}>('SELECT COUNT(*) as count FROM products');
+				const sales = await database.getAll<{count: number}>('SELECT COUNT(*) as count FROM sales');
+				console.log('[Sync] Local data counts - Products:', products[0]?.count || 0, 'Sales:', sales[0]?.count || 0);
+				
+			} catch (err) {
+				console.error('[Sync] Manual sync error:', err);
+			}
+		}, 3000);
+		
 	} catch (error) {
 		console.error('[Sync] Failed to initialize:', error);
 	}
