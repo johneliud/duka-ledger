@@ -2,7 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { AuthContext } from './AuthContext';
 import { login as apiLogin, register as apiRegister, joinShop as apiJoinShop } from './auth';
 import { connector } from '@/db/connector';
-import { initializeSync } from '@/db/powersync';
+import { initializeSync, disconnectFromShop } from '@/db/powersync';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<{ id: string; name: string; id_number: string } | null>(null);
@@ -84,6 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	};
 
 	const logout = () => {
+		disconnectFromShop();
 		setUser(null);
 		setShop(null);
 		setRole(null);
