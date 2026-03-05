@@ -14,14 +14,21 @@ export class DukaConnector implements PowerSyncBackendConnector {
 	private currentRetry = 0;
 
 	async fetchCredentials(): Promise<PowerSyncCredentials> {
+		const shopId = this.shopId || localStorage.getItem('shop_id');
+		const userId = this.userId || localStorage.getItem('user_id');
+		
+		console.log('[Sync] fetchCredentials called, shopId:', shopId, 'userId:', userId);
+		
+		if (!shopId || !userId) {
+			console.error('[Sync] Missing shopId or userId for credentials');
+			throw new Error('shop_id and user_id are required for sync');
+		}
+		
 		try {
 			const response = await fetch(`${API_URL}/api/auth/token`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					shop_id: this.shopId || localStorage.getItem('shop_id'),
-					user_id: this.userId || localStorage.getItem('user_id')
-				})
+				body: JSON.stringify({ shop_id: shopId, user_id: userId })
 			});
 
 			if (!response.ok) {
@@ -30,7 +37,11 @@ export class DukaConnector implements PowerSyncBackendConnector {
 			}
 
 			const { token } = await response.json();
-			console.log('[Sync] Credentials fetched successfully');
+			console.log('[Sync] Credentials fetched successfully, token:', token ? 'present' : 'missing');
+			
+			if (!token) {
+				throw new Error('No token returned from /api/auth/token');
+			}
 			
 			return {
 				endpoint: import.meta.env.VITE_POWERSYNC_URL || '',
