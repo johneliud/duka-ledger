@@ -19,6 +19,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				setShop(shop);
 				setRole(role);
 				setToken(token);
+				localStorage.setItem('shop_id', shop.id);
+				localStorage.setItem('user_id', user.id);
 				connector.setCredentials(shop.id, user.id);
 				initializeSync(shop.id);
 			} catch (e) {
@@ -30,6 +32,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 	const saveSession = (user: any, shop: any, role: string, token: string) => {
 		localStorage.setItem('duka_session', JSON.stringify({ user, shop, role, token }));
+		localStorage.setItem('shop_id', shop.id);
+		localStorage.setItem('user_id', user.id);
 	};
 
 	const login = async (idNumber: string, pin: string) => {
@@ -90,6 +94,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		setRole(null);
 		setToken(null);
 		localStorage.removeItem('duka_session');
+		localStorage.removeItem('shop_id');
+		localStorage.removeItem('user_id');
 	};
 
 	return (
