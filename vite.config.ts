@@ -72,6 +72,7 @@ export default defineConfig({
 			}
 		})
 	],
+	envPrefix: ['VITE_', 'API_URL', 'POWERSYNC_URL', 'SUPABASE_'],
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src')
