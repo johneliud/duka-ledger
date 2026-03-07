@@ -9,7 +9,6 @@ const authenticate = (req: Request, res: Response, next: () => void) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   
   if (!token) {
-    console.log('No token provided');
     return res.status(401).json({ error: 'No token provided' });
   }
 
