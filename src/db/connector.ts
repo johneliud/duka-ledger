@@ -5,7 +5,7 @@ import {
 	type PowerSyncCredentials
 } from '@powersync/web';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.API_URL;
 
 export class DukaConnector implements PowerSyncBackendConnector {
 	private shopId: string | null = null;
@@ -16,8 +16,6 @@ export class DukaConnector implements PowerSyncBackendConnector {
 	async fetchCredentials(): Promise<PowerSyncCredentials> {
 		const shopId = this.shopId || localStorage.getItem('shop_id');
 		const userId = this.userId || localStorage.getItem('user_id');
-		
-		console.log('[Sync] fetchCredentials called, shopId:', shopId, 'userId:', userId);
 		
 		if (!shopId || !userId) {
 			console.error('[Sync] Missing shopId or userId for credentials');
@@ -37,16 +35,16 @@ export class DukaConnector implements PowerSyncBackendConnector {
 			}
 
 			const { token } = await response.json();
-			console.log('[Sync] Credentials fetched successfully, token:', token ? 'present' : 'missing');
 			
 			if (!token) {
 				throw new Error('No token returned from /api/auth/token');
 			}
 			
-			return {
-				endpoint: import.meta.env.VITE_POWERSYNC_URL || '',
+			const credentials = {
+				endpoint: import.meta.env.POWERSYNC_URL || '',
 				token
 			};
+			return credentials;
 		} catch (error) {
 			console.error('[Sync] Error fetching credentials:', error);
 			throw error;
@@ -65,8 +63,6 @@ export class DukaConnector implements PowerSyncBackendConnector {
 			table: entry.table,
 			data: entry.opData
 		}));
-
-		console.log(`[Sync] Uploading ${operations.length} operations:`, operations.slice(0, 3));
 
 		try {
 			const response = await fetch(`${API_URL}/api/sync/upload`, {
