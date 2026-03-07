@@ -28,7 +28,11 @@ router.post("/token", (req: Request, res: Response) => {
   const JWT_SECRET = getJwtSecret(res);
   if (!JWT_SECRET) return;
 
-  const token = jwt.sign({ shop_id, user_id }, JWT_SECRET, { expiresIn: "7d" });
+  const token = jwt.sign(
+    { sub: user_id, shop_id, user_id },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  );
   res.json({ token });
 });
 
@@ -96,9 +100,9 @@ router.post("/register", async (req: Request, res: Response) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { shop_id: newShop.id, user_id: newUser.id, role: "owner" },
+      { sub: newUser.id, shop_id: newShop.id, user_id: newUser.id, role: "owner" },
       JWT_SECRET,
-      { expiresIn: "24h" },
+      { expiresIn: "7d" }
     );
 
     res.status(201).json({
@@ -163,9 +167,9 @@ router.post("/login", async (req: Request, res: Response) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { shop_id: membership.shop_id, user_id: user.id, role: membership.role },
+      { sub: user.id, shop_id: membership.shop_id, user_id: user.id, role: membership.role },
       JWT_SECRET,
-      { expiresIn: "24h" },
+      { expiresIn: "7d" },
     );
 
     res.json({
@@ -245,15 +249,15 @@ router.post("/join", async (req: Request, res: Response) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { shop_id: shop.id, user_id: newUser.id, role: "member" },
+      { sub: newUser.id, shop_id: shop.id, user_id: newUser.id, role: "member" },
       JWT_SECRET,
-      { expiresIn: "24h" },
+      { expiresIn: "7d" }
     );
 
     res.status(201).json({
       token,
       user: { id: newUser.id, name, id_number },
-      shop: { id: shop.id, name: shop.name, invite_code: invite_code },
+      shop: { id: shop.id, name: shop.name, invite_code: invite_code.toUpperCase() },
       role: "member",
     });
   } catch (error) {
