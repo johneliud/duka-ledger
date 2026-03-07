@@ -67,7 +67,6 @@ export async function initializeSync(shopId?: string) {
 	}
 	
 	try {
-		console.log('[Sync] Connecting to PowerSync with endpoint:', import.meta.env.VITE_POWERSYNC_URL);
 		await database.connect(connector);
 		syncInitialized = true;
 		console.log('[Sync] PowerSync connected successfully');
@@ -111,10 +110,10 @@ export async function initializeSync(shopId?: string) {
 }
 
 // Keep Render server awake to prevent sleeps on free tier after every 10 minutes
-if (import.meta.env.VITE_API_URL) {
+if (import.meta.env.API_URL) {
 	setInterval(async () => {
 		try {
-			await fetch(`${import.meta.env.VITE_API_URL}/health`);
+			await fetch(`${import.meta.env.API_URL}/health`);
 			console.log('[KeepAlive] Server pinged');
 		} catch (error) {
 			console.log('[KeepAlive] Ping failed:', error);
