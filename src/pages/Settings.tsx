@@ -27,7 +27,7 @@ export function Settings() {
       if (!shop?.id) return;
       
       try {
-        const API_URL = import.meta.env.VITE_API_URL;
+        const API_URL = import.meta.env.API_URL;
         const session = localStorage.getItem('duka_session');
         const token = session ? JSON.parse(session).token : null;
         
