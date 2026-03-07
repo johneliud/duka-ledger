@@ -7,12 +7,12 @@ import shopRoutes from "./routes/shop.ts";
 
 dotenv.config();
 
-if (!process.env.SUPABASE_DB_URL) {
+if (!process.env.SUPABASE_DB_URI) {
   throw new Error("Database connection URL are not defined");
 }
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined");
