@@ -185,16 +185,16 @@ Create `.env` file in the root directory:
 
 ```env
 # Supabase Configuration
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_PROJECT_URL=https://your-project.supabase.co
+SUPABASE_ANON_PUBLIC=your-anon-key
 
 # PowerSync Configuration
-VITE_POWERSYNC_URL=https://your-instance.powersync.com
+POWERSYNC_URL=https://your-instance.powersync.com
 
 # Backend Configuration
 PORT=3001
 JWT_SECRET=your-secret-key-min-32-chars
-DATABASE_URL=postgresql://user:pass@host:5432/dbname
+SUPABASE_DB_URI=postgresql://user:pass@host:5432/dbname
 ```
 
 ### 4. Database Setup
