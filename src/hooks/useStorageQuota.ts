@@ -34,7 +34,7 @@ export function useStorageQuota() {
 		};
 
 		checkStorage();
-		const interval = setInterval(checkStorage, 24 * 60 * 60 * 1000); // Daily
+		const interval = setInterval(checkStorage, 24 * 60 * 60 * 1000);
 
 		return () => clearInterval(interval);
 	}, []);
