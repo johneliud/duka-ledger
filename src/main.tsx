@@ -24,7 +24,6 @@ function Root() {
 	useEffect(() => {
 		db.init().then(() => {
 			console.log('PowerSync database initialized')
-			// Expose db to window for console testing
 			if (typeof window !== 'undefined') {
 				(window as unknown as { db: typeof db }).db = db
 			}
