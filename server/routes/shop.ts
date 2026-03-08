@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 
 const router = Router();
 
-// Middleware to verify JWT
 const authenticate = (req: Request, res: Response, next: () => void) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   
