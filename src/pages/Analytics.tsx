@@ -84,7 +84,7 @@ export function Analytics() {
       const daySales = allSales.filter((s) =>
         s.created_at.startsWith(day.date),
       );
-      const total = daySales.reduce((sum, s) => sum + s.total, 0);
+      const total = daySales.reduce((sum, s) => sum + Number(s.total), 0);
       return {
         name: day.label,
         total,
@@ -100,7 +100,7 @@ export function Analytics() {
         const saleDate = s.created_at.split("T")[0];
         return saleDate >= week.start && saleDate <= week.end;
       });
-      const total = weekSales.reduce((sum, s) => sum + s.total, 0);
+      const total = weekSales.reduce((sum, s) => sum + Number(s.total), 0);
       return {
         name: week.label,
         total,

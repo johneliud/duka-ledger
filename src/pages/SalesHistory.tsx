@@ -35,7 +35,7 @@ export function SalesHistory() {
 	};
 
 	const getTotal = () => {
-		return sales.reduce((sum, sale) => sum + sale.total, 0);
+		return sales.reduce((sum, sale) => sum + Number(sale.total), 0);
 	};
 
 	const handleDelete = async (id: string) => {
@@ -110,7 +110,7 @@ export function SalesHistory() {
 												</div>
 												<div className="flex items-center gap-3">
 													<div className="text-lg font-bold text-text">
-														KSh {sale.total.toLocaleString()}
+														KSh {Number(sale.total).toLocaleString()}
 													</div>
 													<button
 														onClick={() => setDeleteId(sale.id)}
@@ -169,19 +169,19 @@ export function SalesHistory() {
 							<div className="flex justify-between">
 								<span className="text-sm text-muted">Cash</span>
 								<span className="font-medium text-text">
-									KSh {sales.filter(s => s.payment_method === 'cash').reduce((sum, s) => sum + s.total, 0).toLocaleString()}
+									KSh {sales.filter(s => s.payment_method === 'cash').reduce((sum, s) => sum + Number(s.total), 0).toLocaleString()}
 								</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-sm text-muted">M-Pesa</span>
 								<span className="font-medium text-text">
-									KSh {sales.filter(s => s.payment_method === 'mpesa').reduce((sum, s) => sum + s.total, 0).toLocaleString()}
+									KSh {sales.filter(s => s.payment_method === 'mpesa').reduce((sum, s) => sum + Number(s.total), 0).toLocaleString()}
 								</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-sm text-muted">Credit</span>
 								<span className="font-medium text-text">
-									KSh {sales.filter(s => s.payment_method === 'credit').reduce((sum, s) => sum + s.total, 0).toLocaleString()}
+									KSh {sales.filter(s => s.payment_method === 'credit').reduce((sum, s) => sum + Number(s.total), 0).toLocaleString()}
 								</span>
 							</div>
 						</div>

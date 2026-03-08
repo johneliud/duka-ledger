@@ -13,16 +13,16 @@ export function Dashboard() {
 	const { data: debts } = useDebts();
 	const { data: products } = useProducts();
 
-	const totalSales = sales.reduce((sum, s) => sum + s.total, 0);
-	const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+	const totalSales = sales.reduce((sum, s) => sum + Number(s.total), 0);
+	const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
 	const costOfGoodsSold = sales.reduce((sum, s) => {
 		const product = products.find(p => p.id === s.product_id);
-		return sum + (product?.purchase_price || 0) * s.quantity;
+		return sum + (Number(product?.purchase_price) || 0) * s.quantity;
 	}, 0);
 	const netProfit = totalSales - costOfGoodsSold - totalExpenses;
 	const pendingDebt = debts
 		.filter(d => d.status !== 'cleared')
-		.reduce((sum, d) => sum + (d.amount_owed - d.amount_paid), 0);
+		.reduce((sum, d) => sum + (Number(d.amount_owed) - Number(d.amount_paid)), 0);
 
 	const recentSales = sales.slice(0, 5);
 	const lowStock = products.filter(p => p.stock_count < lowStockThreshold);

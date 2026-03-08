@@ -36,9 +36,9 @@ export function DebtBook() {
     const debt = debts.find((d) => d.id === selectedDebt);
     if (!debt) return;
 
-    const newPaid = debt.amount_paid + payment;
+    const newPaid = Number(debt.amount_paid) + payment;
     const newStatus: DebtStatus =
-      newPaid >= debt.amount_owed
+      newPaid >= Number(debt.amount_owed)
         ? "cleared"
         : newPaid > 0
           ? "partial"
@@ -130,7 +130,7 @@ export function DebtBook() {
   };
 
   const totalOwed = debts.reduce(
-    (sum, d) => sum + (d.amount_owed - d.amount_paid),
+    (sum, d) => sum + (Number(d.amount_owed) - Number(d.amount_paid)),
     0,
   );
 
@@ -154,13 +154,13 @@ export function DebtBook() {
               <div>
                 <div className="text-sm text-muted">Total Owed</div>
                 <div className="text-xl font-bold text-primary">
-                  KSh {selectedDebtData?.amount_owed.toLocaleString()}
+                  KSh {Number(selectedDebtData?.amount_owed).toLocaleString()}
                 </div>
               </div>
               <div>
                 <div className="text-sm text-muted">Amount Paid</div>
                 <div className="text-xl font-bold text-secondary">
-                  KSh {selectedDebtData?.amount_paid.toLocaleString()}
+                  KSh {Number(selectedDebtData?.amount_paid).toLocaleString()}
                 </div>
               </div>
               <div>
@@ -168,8 +168,8 @@ export function DebtBook() {
                 <div className="text-xl font-bold text-text">
                   KSh{" "}
                   {(
-                    (selectedDebtData?.amount_owed || 0) -
-                    (selectedDebtData?.amount_paid || 0)
+                    Number(selectedDebtData?.amount_owed || 0) -
+                    Number(selectedDebtData?.amount_paid || 0)
                   ).toLocaleString()}
                 </div>
               </div>
@@ -258,7 +258,7 @@ export function DebtBook() {
                 <div className="grid sm:grid-cols-2 gap-3">
                   {debts.map((debt) => {
                     const updateTime = new Date(debt.updated_at).getTime();
-                    const remaining = debt.amount_owed - debt.amount_paid;
+                    const remaining = Number(debt.amount_owed) - Number(debt.amount_paid);
                     const days = getDaysOverdue(debt.updated_at, now);
                     const createdDate = new Date(
                       debt.updated_at,
@@ -322,7 +322,7 @@ export function DebtBook() {
                         <div className="flex justify-between items-end mt-3 pt-2 border-t border-border">
                           <div className="text-xs text-muted">
                             {debt.status === "partial" &&
-                              `Paid: KSh ${debt.amount_paid.toLocaleString()}`}
+                              `Paid: KSh ${Number(debt.amount_paid).toLocaleString()}`}
                           </div>
                           <div className="text-lg font-bold text-text">
                             KSh {remaining.toLocaleString()}
@@ -384,7 +384,7 @@ export function DebtBook() {
                     <span className="font-medium text-text">
                       KSh{" "}
                       {debts
-                        .reduce((sum, d) => sum + d.amount_owed, 0)
+                        .reduce((sum, d) => sum + Number(d.amount_owed), 0)
                         .toLocaleString()}
                     </span>
                   </div>
@@ -393,7 +393,7 @@ export function DebtBook() {
                     <span className="font-medium text-secondary">
                       KSh{" "}
                       {debts
-                        .reduce((sum, d) => sum + d.amount_paid, 0)
+                        .reduce((sum, d) => sum + Number(d.amount_paid), 0)
                         .toLocaleString()}
                     </span>
                   </div>

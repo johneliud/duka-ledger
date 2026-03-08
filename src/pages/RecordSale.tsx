@@ -21,7 +21,7 @@ export function RecordSale() {
 
 	const today = new Date().toISOString().split('T')[0];
 	const { data: todaySales } = useSales(today);
-	const todayTotal = todaySales.reduce((sum, s) => sum + s.total, 0);
+	const todayTotal = todaySales.reduce((sum, s) => sum + Number(s.total), 0);
 
 	const handleRecordSale = async () => {
 		if (!selectedProductId || quantity <= 0) {
@@ -261,7 +261,7 @@ export function RecordSale() {
 											</div>
 										</div>
 										<div className="text-sm font-bold text-text">
-											KSh {sale.total.toLocaleString()}
+											KSh {Number(sale.total).toLocaleString()}
 										</div>
 									</div>
 								);

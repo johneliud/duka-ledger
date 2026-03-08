@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useProducts } from '@/hooks/useDatabase';
 import { db } from '@/db/powersync';
 import { useNotification } from '@/hooks/useNotification';
+import { useSettings } from '@/lib/SettingsContext';
 import { Plus, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 
 export function Products() {
 	const { data: products } = useProducts();
 	const { showSuccess, showError } = useNotification();
+	const { profitMargin } = useSettings();
 	const [showForm, setShowForm] = useState(false);
 	const [editId, setEditId] = useState<string | null>(null);
 	const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -179,7 +181,14 @@ export function Products() {
 								<input
 									type="number"
 									value={purchasePrice}
-									onChange={(e) => setPurchasePrice(e.target.value)}
+									onChange={(e) => {
+										const pp = e.target.value;
+										setPurchasePrice(pp);
+										if (profitMargin > 0 && pp && parseFloat(pp) >= 0) {
+											const calculated = parseFloat(pp) * (1 + profitMargin / 100);
+											setPrice(calculated.toFixed(2));
+										}
+									}}
 									placeholder="0"
 									min="0"
 									step="0.01"

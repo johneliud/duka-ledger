@@ -51,7 +51,7 @@ export function Expenses() {
 		}
 	};
 
-	const todayTotal = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+	const todayTotal = expenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
 
 	return (
 		<div className="container mx-auto px-4 xl:px-0 py-6">
@@ -135,7 +135,7 @@ export function Expenses() {
 						{categories.map(cat => {
 							const catTotal = expenses
 								.filter(e => e.category === cat.value)
-								.reduce((sum, e) => sum + e.amount, 0);
+								.reduce((sum, e) => sum + Number(e.amount), 0);
 							const Icon = cat.icon;
 							return (
 								<div key={cat.value} className="flex justify-between items-center">
@@ -179,7 +179,7 @@ export function Expenses() {
 											</div>
 										</div>
 										<div className="text-sm font-bold text-text">
-											KSh {exp.amount.toLocaleString()}
+											KSh {Number(exp.amount).toLocaleString()}
 										</div>
 									</div>
 								);
