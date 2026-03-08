@@ -25,7 +25,6 @@ router.post("/upload", async (req: Request, res: Response) => {
     for (const op of operations) {
       const { type, table, data } = op;
 
-      // Only allow writes to core data tables — never auth tables
       if (!ALLOWED_TABLES.includes(table)) {
         return res.status(403).json({ error: `Table "${table}" is not writable via sync` });
       }
