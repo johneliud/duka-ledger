@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { db } from '@/db/powersync';
-import { CircleCheck, Clock, RefreshCw, AlertCircle, X } from 'lucide-react';
+import { CircleCheck, Clock, RefreshCw, AlertCircle, X, Download, Upload, WifiOff } from 'lucide-react';
 
 export function SyncBadge() {
 	const { isOnline } = useNetworkStatus();
 	const [showDrawer, setShowDrawer] = useState(false);
 	const [pendingCount, setPendingCount] = useState(0);
-	const [isSyncing, setIsSyncing] = useState(false);
+	const [isConnecting, setIsConnecting] = useState(false);
+	const [isDownloading, setIsDownloading] = useState(false);
+	const [isUploading, setIsUploading] = useState(false);
+	const [isConnected, setIsConnected] = useState(false);
 	const [lastSyncTime, setLastSyncTime] = useState(new Date());
 
 	useEffect(() => {
@@ -15,14 +18,17 @@ export function SyncBadge() {
 			try {
 				const syncStatus = db.currentStatus;
 				const dataFlow = syncStatus?.dataFlowStatus || {};
-				const syncing = syncStatus?.connecting || dataFlow.downloading || dataFlow.uploading || false;
-				setIsSyncing(syncing);
+				
+				setIsConnecting(syncStatus?.connecting || false);
+				setIsDownloading(dataFlow.downloading || false);
+				setIsUploading(dataFlow.uploading || false);
+				setIsConnected(syncStatus?.connected || false);
 				
 				const result = await db.execute('SELECT COUNT(*) as count FROM ps_crud');
 				const count = Number(result.rows?._array?.[0]?.count) || 0;
 				setPendingCount(count);
 				
-				if (!syncing && count === 0 && syncStatus?.connected) {
+				if (!dataFlow.downloading && !dataFlow.uploading && count === 0 && syncStatus?.connected) {
 					setLastSyncTime(new Date());
 				}
 			} catch (error) {
@@ -36,9 +42,12 @@ export function SyncBadge() {
 	}, []);
 
 	const getSyncStatus = () => {
-		if (!isOnline) return { icon: AlertCircle, text: 'Offline', color: 'text-primary', bgColor: 'bg-primary/10' };
-		if (isSyncing) return { icon: RefreshCw, text: 'Syncing...', color: 'text-accent', bgColor: 'bg-accent/10' };
+		if (!isOnline) return { icon: WifiOff, text: 'Offline', color: 'text-primary', bgColor: 'bg-primary/10' };
+		if (isConnecting) return { icon: RefreshCw, text: 'Connecting...', color: 'text-accent', bgColor: 'bg-accent/10', spinning: true };
+		if (isDownloading) return { icon: Download, text: 'Downloading...', color: 'text-blue-500', bgColor: 'bg-blue-500/10', spinning: true };
+		if (isUploading) return { icon: Upload, text: 'Uploading...', color: 'text-accent', bgColor: 'bg-accent/10', spinning: true };
 		if (pendingCount > 0) return { icon: Clock, text: `${pendingCount} pending`, color: 'text-accent', bgColor: 'bg-accent/10' };
+		if (!isConnected) return { icon: AlertCircle, text: 'Disconnected', color: 'text-primary', bgColor: 'bg-primary/10' };
 		return { icon: CircleCheck, text: 'Synced', color: 'text-secondary', bgColor: 'bg-secondary/10' };
 	};
 
@@ -53,7 +62,7 @@ export function SyncBadge() {
 				className={`p-2 rounded-lg transition-all ${status.bgColor} ${status.color}`}
 				aria-label="Sync status"
 			>
-				<Icon size={20} className={isSyncing ? 'animate-spin' : ''} />
+				<Icon size={20} className={status.spinning ? 'animate-spin' : ''} />
 			</button>
 
 			{/* Drawer */}
@@ -73,7 +82,7 @@ export function SyncBadge() {
 						<div className="p-4 space-y-4">
 							<div className="flex items-center gap-3">
 								<div className={`p-2 rounded-lg ${status.bgColor}`}>
-									<Icon size={24} className={`${status.color} ${isSyncing ? 'animate-spin' : ''}`} />
+									<Icon size={24} className={`${status.color} ${status.spinning ? 'animate-spin' : ''}`} />
 								</div>
 								<div>
 									<div className="font-medium text-text">{status.text}</div>
