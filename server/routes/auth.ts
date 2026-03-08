@@ -17,7 +17,6 @@ const getJwtSecret = (res: Response): string | null => {
   return JWT_SECRET;
 };
 
-// POST /api/auth/token — issue a PowerSync token
 router.post("/token", (req: Request, res: Response) => {
   const { shop_id, user_id } = req.body;
 
@@ -28,15 +27,15 @@ router.post("/token", (req: Request, res: Response) => {
   const JWT_SECRET = getJwtSecret(res);
   if (!JWT_SECRET) return;
 
-  const token = jwt.sign(
-    { sub: user_id, shop_id, user_id },
-    JWT_SECRET,
-    { expiresIn: "7d" }
-  );
+  const KID = process.env.POWERSYNC_KID;
+  const token = jwt.sign({ sub: user_id, shop_id, user_id }, JWT_SECRET, {
+    expiresIn: "7d",
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    header: { kid: KID, alg: "HS256" } as any,
+  });
   res.json({ token });
 });
 
-// POST /api/auth/register — create user + shop
 router.post("/register", async (req: Request, res: Response) => {
   const { name, id_number, pin, shop_name } = req.body;
 
@@ -54,7 +53,6 @@ router.post("/register", async (req: Request, res: Response) => {
   if (!JWT_SECRET) return;
 
   try {
-    // Check if user already exists
     const { data: existingUser } = await supabase
       .from("users")
       .select("id")
@@ -67,10 +65,8 @@ router.post("/register", async (req: Request, res: Response) => {
         .json({ error: "User with this ID already exists" });
     }
 
-    // Hash PIN
     const pin_hash = await bcrypt.hash(pin, 10);
 
-    // Create user
     const { data: newUser, error: userError } = await supabase
       .from("users")
       .insert({ name, id_number, pin_hash })
@@ -82,7 +78,6 @@ router.post("/register", async (req: Request, res: Response) => {
     // Generate invite code
     const inviteCode = `DUKA-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // Create shop
     const { data: newShop, error: shopError } = await supabase
       .from("shops")
       .insert({ name: shop_name, invite_code: inviteCode })
@@ -91,18 +86,22 @@ router.post("/register", async (req: Request, res: Response) => {
 
     if (shopError) throw shopError;
 
-    // Add user as owner
     const { error: memberError } = await supabase
       .from("shop_members")
       .insert({ user_id: newUser.id, shop_id: newShop.id, role: "owner" });
 
     if (memberError) throw memberError;
 
-    // Generate JWT
+    const KID = process.env.POWERSYNC_KID;
     const token = jwt.sign(
-      { sub: newUser.id, shop_id: newShop.id, user_id: newUser.id, role: "owner" },
+      {
+        sub: newUser.id,
+        shop_id: newShop.id,
+        user_id: newUser.id,
+        role: "owner",
+      },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d", header: { kid: KID, alg: "HS256" } as any },
     );
 
     res.status(201).json({
@@ -117,7 +116,6 @@ router.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/auth/login
 router.post("/login", async (req: Request, res: Response) => {
   const { id_number, pin } = req.body;
 
@@ -129,7 +127,6 @@ router.post("/login", async (req: Request, res: Response) => {
   if (!JWT_SECRET) return;
 
   try {
-    // Find user by id_number
     const { data: user, error: userError } = await supabase
       .from("users")
       .select("id, name, pin_hash")
@@ -142,13 +139,11 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    // Verify PIN
     const pinMatch = await bcrypt.compare(pin, user.pin_hash);
     if (!pinMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    // Get shop membership
     const { data: membership, error: memberError } = await supabase
       .from("shop_members")
       .select("shop_id, role, shops!inner(name, invite_code)")
@@ -161,15 +156,23 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "No shop found for this user" });
     }
 
-    const shopData = membership.shops as unknown as { name: string; invite_code: string };
+    const shopData = membership.shops as unknown as {
+      name: string;
+      invite_code: string;
+    };
     const shopName = shopData?.name ?? "";
     const inviteCode = shopData?.invite_code ?? "";
 
-    // Generate JWT
+    const KID = process.env.POWERSYNC_KID;
     const token = jwt.sign(
-      { sub: user.id, shop_id: membership.shop_id, user_id: user.id, role: membership.role },
+      {
+        sub: user.id,
+        shop_id: membership.shop_id,
+        user_id: user.id,
+        role: membership.role,
+      },
       JWT_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "7d", header: { kid: KID, alg: "HS256" } as any },
     );
 
     res.json({
@@ -184,7 +187,6 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/auth/join — join existing shop via invite code
 router.post("/join", async (req: Request, res: Response) => {
   const { name, id_number, pin, invite_code } = req.body;
 
@@ -202,7 +204,6 @@ router.post("/join", async (req: Request, res: Response) => {
   if (!JWT_SECRET) return;
 
   try {
-    // Find shop by invite code
     const { data: shop, error: shopError } = await supabase
       .from("shops")
       .select("id, name")
@@ -215,7 +216,6 @@ router.post("/join", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Invalid invite code" });
     }
 
-    // Check user doesn't already exist
     const { data: existingUser } = await supabase
       .from("users")
       .select("id")
@@ -228,10 +228,7 @@ router.post("/join", async (req: Request, res: Response) => {
         .json({ error: "User with this ID already exists" });
     }
 
-    // Hash PIN
     const pin_hash = await bcrypt.hash(pin, 10);
-
-    // Create user
     const { data: newUser, error: userError } = await supabase
       .from("users")
       .insert({ name, id_number, pin_hash })
@@ -240,24 +237,32 @@ router.post("/join", async (req: Request, res: Response) => {
 
     if (userError) throw userError;
 
-    // Add as member
     const { error: memberError } = await supabase
       .from("shop_members")
       .insert({ user_id: newUser.id, shop_id: shop.id, role: "member" });
 
     if (memberError) throw memberError;
 
-    // Generate JWT
+    const KID = process.env.POWERSYNC_KID;
     const token = jwt.sign(
-      { sub: newUser.id, shop_id: shop.id, user_id: newUser.id, role: "member" },
+      {
+        sub: newUser.id,
+        shop_id: shop.id,
+        user_id: newUser.id,
+        role: "member",
+      },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d", header: { kid: KID, alg: "HS256" } as any },
     );
 
     res.status(201).json({
       token,
       user: { id: newUser.id, name, id_number },
-      shop: { id: shop.id, name: shop.name, invite_code: invite_code.toUpperCase() },
+      shop: {
+        id: shop.id,
+        name: shop.name,
+        invite_code: invite_code.toUpperCase(),
+      },
       role: "member",
     });
   } catch (error) {
