@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { db } from '@/db/powersync';
-import { CircleCheck, Clock, RefreshCw, AlertCircle, X, Download, Upload, WifiOff } from 'lucide-react';
+import { CircleCheck, Clock, RefreshCw, AlertCircle, X, ArrowDownToLine, ArrowUpFromLine, WifiOff } from 'lucide-react';
 
 export function SyncBadge() {
 	const { isOnline } = useNetworkStatus();
@@ -44,8 +44,8 @@ export function SyncBadge() {
 	const getSyncStatus = () => {
 		if (!isOnline) return { icon: WifiOff, text: 'Offline', color: 'text-primary', bgColor: 'bg-primary/10' };
 		if (isConnecting) return { icon: RefreshCw, text: 'Connecting...', color: 'text-accent', bgColor: 'bg-accent/10', spinning: true };
-		if (isDownloading) return { icon: Download, text: 'Downloading...', color: 'text-blue-500', bgColor: 'bg-blue-500/10', spinning: true };
-		if (isUploading) return { icon: Upload, text: 'Uploading...', color: 'text-accent', bgColor: 'bg-accent/10', spinning: true };
+		if (isDownloading) return { icon: ArrowDownToLine, text: 'Downloading...', color: 'text-blue-500', bgColor: 'bg-blue-500/10', spinning: false };
+		if (isUploading) return { icon: ArrowUpFromLine, text: 'Uploading...', color: 'text-accent', bgColor: 'bg-accent/10', spinning: false };
 		if (pendingCount > 0) return { icon: Clock, text: `${pendingCount} pending`, color: 'text-accent', bgColor: 'bg-accent/10' };
 		if (!isConnected) return { icon: AlertCircle, text: 'Disconnected', color: 'text-primary', bgColor: 'bg-primary/10' };
 		return { icon: CircleCheck, text: 'Synced', color: 'text-secondary', bgColor: 'bg-secondary/10' };
