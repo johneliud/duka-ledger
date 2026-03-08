@@ -31,18 +31,29 @@ router.post("/upload", async (req: Request, res: Response) => {
 
       if (type === "INSERT") {
         const { error } = await supabase.from(table).insert(data);
-        if (error) throw error;
+        if (error) {
+          console.error(`[Sync] INSERT error on ${table}:`, error);
+          throw error;
+        }
 
       } else if (type === "UPDATE") {
-        const { id, ...updates } = data;
+        const id = data.id;
         if (!id) throw new Error(`UPDATE on "${table}" missing id field`);
+        const updates = { ...data };
+        delete (updates as Record<string, unknown>).id;
         const { error } = await supabase.from(table).update(updates).eq("id", id);
-        if (error) throw error;
+        if (error) {
+          console.error(`[Sync] UPDATE error on ${table}:`, error);
+          throw error;
+        }
 
       } else if (type === "DELETE") {
         if (!data.id) throw new Error(`DELETE on "${table}" missing id field`);
         const { error } = await supabase.from(table).delete().eq("id", data.id);
-        if (error) throw error;
+        if (error) {
+          console.error(`[Sync] DELETE error on ${table}:`, error);
+          throw error;
+        }
 
       } else {
         return res.status(400).json({ error: `Unknown operation type: ${type}` });
