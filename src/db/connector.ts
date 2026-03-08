@@ -26,7 +26,6 @@ export class DukaConnector implements PowerSyncBackendConnector {
     }
 
     try {
-      console.log("[Sync] Fetching token for:", { shopId, userId });
       const response = await fetch(`${API_URL}/api/auth/token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -51,26 +50,10 @@ export class DukaConnector implements PowerSyncBackendConnector {
         throw new Error("No token returned from /api/auth/token");
       }
 
-      try {
-        const parts = token.split(".");
-        if (parts.length === 3) {
-          const header = JSON.parse(atob(parts[0]));
-          const payload = JSON.parse(atob(parts[1]));
-          console.log("[Sync] Token info:", { header, payload });
-        }
-      } catch {
-        console.warn("[Sync] Could not decode token for logging");
-      }
-
       const credentials = {
         endpoint: import.meta.env.POWERSYNC_URL,
         token,
       };
-
-      console.log(
-        "[Sync] Token retrieved successfully. Endpoint:",
-        credentials.endpoint,
-      );
       return credentials;
     } catch (error) {
       console.error("[Sync] Error fetching credentials:", error);
@@ -111,7 +94,6 @@ export class DukaConnector implements PowerSyncBackendConnector {
 
       await batch.complete();
       this.currentRetry = 0;
-      console.log("[Sync] Upload complete");
     } catch (error) {
       const delay =
         this.retryDelays[
