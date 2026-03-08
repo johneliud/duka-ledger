@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       connector.setCredentials(shop.id, user.id);
       initializeSync(shop.id);
     }
-  }, [shop?.id, user?.id]);
+  }, [shop, user]);
 
   const saveSession = (user: User, shop: Shop, role: string, token: string) => {
     localStorage.setItem(
