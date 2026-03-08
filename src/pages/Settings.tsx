@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useSettings } from "@/lib/SettingsContext";
+import { useSettings } from "@/lib/useSettings";
 import { Copy, Check, AlertTriangle, RotateCcw, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
