@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useProducts } from '@/hooks/useDatabase';
 import { db } from '@/db/powersync';
-import { useNotification } from '@/hooks/useNotification';
-import { useSettings } from '@/lib/SettingsContext';
+import { useSettings } from '@/lib/useSettings';
+import { useNotification } from '@/lib/useNotification';
 import { Plus, Edit2, Trash2, AlertTriangle } from 'lucide-react';
 
 export function Products() {
