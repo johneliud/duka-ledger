@@ -1,22 +1,10 @@
-import { createContext, useState, useCallback, type ReactNode } from 'react';
+import { useState, useCallback, type ReactNode } from 'react';
+import { NotificationContext } from './NotificationContext';
 
 type NotificationType = 'success' | 'error';
 
-interface Notification {
-	id: number;
-	message: string;
-	type: NotificationType;
-}
-
-interface NotificationContextType {
-	showSuccess: (message: string) => void;
-	showError: (message: string) => void;
-}
-
-export const NotificationContext = createContext<NotificationContextType | null>(null);
-
 export function NotificationProvider({ children }: { children: ReactNode }) {
-	const [notifications, setNotifications] = useState<Notification[]>([]);
+	const [notifications, setNotifications] = useState<{ id: number; message: string; type: NotificationType }[]>([]);
 
 	const addNotification = useCallback((message: string, type: NotificationType) => {
 		const id = Date.now();
