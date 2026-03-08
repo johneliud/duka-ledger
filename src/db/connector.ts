@@ -1,98 +1,136 @@
 import {
-	AbstractPowerSyncDatabase,
-	CrudEntry,
-	type PowerSyncBackendConnector,
-	type PowerSyncCredentials
-} from '@powersync/web';
+  AbstractPowerSyncDatabase,
+  CrudEntry,
+  type PowerSyncBackendConnector,
+  type PowerSyncCredentials,
+} from "@powersync/web";
 
 const API_URL = import.meta.env.API_URL;
 
 export class DukaConnector implements PowerSyncBackendConnector {
-	private shopId: string | null = null;
-	private userId: string | null = null;
-	private retryDelays = [1000, 2000, 4000, 8000, 16000, 60000]; // Capped at 60s
-	private currentRetry = 0;
+  private shopId: string | null = null;
+  private userId: string | null = null;
+  private retryDelays = [1000, 2000, 4000, 8000, 16000, 60000];
+  private currentRetry = 0;
 
-	async fetchCredentials(): Promise<PowerSyncCredentials> {
-		const shopId = this.shopId || localStorage.getItem('shop_id');
-		const userId = this.userId || localStorage.getItem('user_id');
-		
-		if (!shopId || !userId) {
-			console.error('[Sync] Missing shopId or userId for credentials');
-			throw new Error('shop_id and user_id are required for sync');
-		}
-		
-		try {
-			const response = await fetch(`${API_URL}/api/auth/token`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ shop_id: shopId, user_id: userId })
-			});
+  async fetchCredentials(): Promise<PowerSyncCredentials> {
+    const shopId = this.shopId || localStorage.getItem("shop_id");
+    const userId = this.userId || localStorage.getItem("user_id");
 
-			if (!response.ok) {
-				console.error('[Sync] Failed to fetch credentials:', response.status, response.statusText);
-				throw new Error(`Failed to fetch credentials: ${response.statusText}`);
-			}
+    if (!shopId || !userId) {
+      console.error("[Sync] Missing shopId or userId for credentials:", {
+        shopId,
+        userId,
+      });
+      throw new Error("shop_id and user_id are required for sync");
+    }
 
-			const { token } = await response.json();
-			
-			if (!token) {
-				throw new Error('No token returned from /api/auth/token');
-			}
-			
-			const credentials = {
-				endpoint: import.meta.env.POWERSYNC_URL || '',
-				token
-			};
-			return credentials;
-		} catch (error) {
-			console.error('[Sync] Error fetching credentials:', error);
-			throw error;
-		}
-	}
+    try {
+      console.log("[Sync] Fetching token for:", { shopId, userId });
+      const response = await fetch(`${API_URL}/api/auth/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shop_id: shopId, user_id: userId }),
+      });
 
-	async uploadData(database: AbstractPowerSyncDatabase): Promise<void> {
-		const batch = await database.getCrudBatch();
-		
-		if (!batch || batch.crud.length === 0) {
-			return;
-		}
+      if (!response.ok) {
+        const body = await response.text();
+        console.error(
+          "[Sync] Failed to fetch credentials:",
+          response.status,
+          body,
+        );
+        throw new Error(
+          `Failed to fetch credentials: ${response.statusText} (${body})`,
+        );
+      }
 
-		const operations = batch.crud.map((entry: CrudEntry) => ({
-			type: entry.op === 'PUT' ? 'INSERT' : entry.op === 'PATCH' ? 'UPDATE' : 'DELETE',
-			table: entry.table,
-			data: entry.opData
-		}));
+      const { token } = await response.json();
 
-		try {
-			const response = await fetch(`${API_URL}/api/sync/upload`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ operations })
-			});
+      if (!token) {
+        throw new Error("No token returned from /api/auth/token");
+      }
 
-			if (!response.ok) {
-				const errorText = await response.text();
-				console.error('[Sync] Upload failed:', response.status, errorText);
-				throw new Error(`Upload failed: ${response.statusText}`);
-			}
+      try {
+        const parts = token.split(".");
+        if (parts.length === 3) {
+          const header = JSON.parse(atob(parts[0]));
+          const payload = JSON.parse(atob(parts[1]));
+          console.log("[Sync] Token info:", { header, payload });
+        }
+      } catch {
+        console.warn("[Sync] Could not decode token for logging");
+      }
 
-			await batch.complete();
-			this.currentRetry = 0;
-			console.log('[Sync] Upload complete');
-		} catch (error) {
-			const delay = this.retryDelays[Math.min(this.currentRetry, this.retryDelays.length - 1)];
-			this.currentRetry++;
-			
-			console.error(`[Sync] Upload error, will retry in ${delay / 1000}s:`, error);
-			throw error;
-		}
-	}
+      const credentials = {
+        endpoint: import.meta.env.POWERSYNC_URL,
+        token,
+      };
 
-	setCredentials(shopId: string, userId: string) {
-		this.shopId = shopId;
-		this.userId = userId;
-	}
+      console.log(
+        "[Sync] Token retrieved successfully. Endpoint:",
+        credentials.endpoint,
+      );
+      return credentials;
+    } catch (error) {
+      console.error("[Sync] Error fetching credentials:", error);
+      throw error;
+    }
+  }
+
+  async uploadData(database: AbstractPowerSyncDatabase): Promise<void> {
+    const batch = await database.getCrudBatch();
+
+    if (!batch || batch.crud.length === 0) {
+      return;
+    }
+
+    const operations = batch.crud.map((entry: CrudEntry) => ({
+      type:
+        entry.op === "PUT"
+          ? "INSERT"
+          : entry.op === "PATCH"
+            ? "UPDATE"
+            : "DELETE",
+      table: entry.table,
+      data: entry.opData,
+    }));
+
+    try {
+      const response = await fetch(`${API_URL}/api/sync/upload`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operations }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("[Sync] Upload failed:", response.status, errorText);
+        throw new Error(`Upload failed: ${response.statusText}`);
+      }
+
+      await batch.complete();
+      this.currentRetry = 0;
+      console.log("[Sync] Upload complete");
+    } catch (error) {
+      const delay =
+        this.retryDelays[
+          Math.min(this.currentRetry, this.retryDelays.length - 1)
+        ];
+      this.currentRetry++;
+
+      console.error(
+        `[Sync] Upload error, will retry in ${delay / 1000}s:`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  setCredentials(shopId: string, userId: string) {
+    this.shopId = shopId;
+    this.userId = userId;
+  }
 }
 
 export const connector = new DukaConnector();
