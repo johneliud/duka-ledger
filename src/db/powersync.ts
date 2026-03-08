@@ -46,7 +46,14 @@ export function clearShopData() {
 export const db = new Proxy({} as PowerSyncDatabase, {
   get(_target, prop) {
     const database = getDatabase();
-    return (database as any)[prop];
+    if (!database) {
+      return undefined;
+    }
+    const value = (database as unknown as Record<string | symbol, unknown>)[prop];
+    if (typeof value === 'function') {
+      return value.bind(database);
+    }
+    return value;
   },
 });
 
@@ -85,13 +92,6 @@ export async function initializeSync(shopId?: string) {
     setTimeout(async () => {
       try {
         await database.waitForReady();
-        const status = database.currentStatus;
-        console.log("[Sync] Status after waitForReady:", {
-          connected: status?.connected,
-          connecting: status?.connecting,
-          downloading: status?.dataFlowStatus.downloading,
-          lastSyncedAt: status?.lastSyncedAt,
-        });
       } catch (err) {
         console.error("[Sync] Initial sync check error:", err);
       }
