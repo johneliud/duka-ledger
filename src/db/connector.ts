@@ -76,7 +76,10 @@ export class DukaConnector implements PowerSyncBackendConnector {
             ? "UPDATE"
             : "DELETE",
       table: entry.table,
-      data: entry.opData,
+      data: {
+        ...entry.opData,
+        ...(entry.id ? { id: entry.id } : {}),
+      },
     }));
 
     try {
