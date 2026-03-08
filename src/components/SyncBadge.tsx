@@ -14,13 +14,15 @@ export function SyncBadge() {
 		const checkSyncStatus = async () => {
 			try {
 				const syncStatus = db.currentStatus;
-				setIsSyncing(syncStatus?.connected || false);
+				const dataFlow = syncStatus?.dataFlowStatus || {};
+				const syncing = syncStatus?.connecting || dataFlow.downloading || dataFlow.uploading || false;
+				setIsSyncing(syncing);
 				
 				const result = await db.execute('SELECT COUNT(*) as count FROM ps_crud');
-				const count = result.rows?._array?.[0]?.count || 0;
+				const count = Number(result.rows?._array?.[0]?.count) || 0;
 				setPendingCount(count);
 				
-				if (syncStatus?.connected && pendingCount === 0) {
+				if (!syncing && count === 0 && syncStatus?.connected) {
 					setLastSyncTime(new Date());
 				}
 			} catch (error) {
@@ -31,7 +33,7 @@ export function SyncBadge() {
 		checkSyncStatus();
 		const interval = setInterval(checkSyncStatus, 2000);
 		return () => clearInterval(interval);
-	}, [pendingCount]);
+	}, []);
 
 	const getSyncStatus = () => {
 		if (!isOnline) return { icon: AlertCircle, text: 'Offline', color: 'text-primary', bgColor: 'bg-primary/10' };
