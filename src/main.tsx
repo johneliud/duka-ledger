@@ -16,14 +16,12 @@ const updateSW = registerSW({
 		}
 	},
 	onOfflineReady() {
-		console.log('App ready to work offline')
 	}
 })
 
 function Root() {
 	useEffect(() => {
 		db.init().then(() => {
-			console.log('PowerSync database initialized')
 			if (typeof window !== 'undefined') {
 				(window as unknown as { db: typeof db }).db = db
 			}
