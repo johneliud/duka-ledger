@@ -33,12 +33,10 @@ export function disconnectFromShop() {
   dbInstance?.disconnect();
   dbInstance = null;
   currentShopId = null;
-  console.log("[DB] Disconnected from shop, data preserved");
 }
 
 export function clearShopData() {
   if (dbInstance) {
-    console.log("[DB] Clearing all shop data");
     dbInstance.disconnectAndClear();
   }
   dbInstance = null;
@@ -56,16 +54,6 @@ let syncStarted = false;
 
 function setupStatusListener(database: PowerSyncDatabase) {
   database.registerListener({
-    statusChanged: (status) => {
-      console.log("[Sync] Status changed:", {
-        connected: status.connected,
-        connecting: status.connecting,
-        downloading: status.dataFlowStatus.downloading,
-        uploading: status.dataFlowStatus.uploading,
-        lastSyncedAt: status.lastSyncedAt,
-        error: status.dataFlowStatus.downloadError?.message,
-      });
-    },
     dbError: (error) => {
       console.error("[Sync] Database error:", error);
     },
@@ -76,36 +64,25 @@ export async function initializeSync(shopId?: string) {
   const database = getDatabase(shopId);
 
   if (syncStarted && database.currentStatus?.connected) {
-    console.log("[Sync] Already connected");
     return;
   }
 
   if (syncStarted && database.currentStatus?.connecting) {
-    console.log("[Sync] Connection already in progress");
     return;
   }
 
   syncStarted = true;
 
   try {
-    console.log(
-      `[Sync] Starting PowerSync connection for shop: ${currentShopId}`,
-    );
-
     setupStatusListener(database);
 
     await database.connect(connector);
-    console.log("[Sync] PowerSync connect() called successfully");
 
     window.addEventListener("online", () => {
-      console.log("[Sync] Network reconnected, triggering sync");
-      database.waitForReady().then(() => {
-        console.log("[Sync] Ready to sync after reconnection");
-      });
+      database.waitForReady().then(() => {});
     });
 
     setTimeout(async () => {
-      console.log("[Sync] Performing initial sync check...");
       try {
         await database.waitForReady();
         const status = database.currentStatus;
@@ -115,25 +92,6 @@ export async function initializeSync(shopId?: string) {
           downloading: status?.dataFlowStatus.downloading,
           lastSyncedAt: status?.lastSyncedAt,
         });
-
-        const productsCount = await database.get<{ count: number }>(
-          "SELECT COUNT(*) as count FROM products",
-        );
-        const salesCount = await database.get<{ count: number }>(
-          "SELECT COUNT(*) as count FROM sales",
-        );
-        console.log(
-          "[Sync] Local data counts - Products:",
-          productsCount?.count || 0,
-          "Sales:",
-          salesCount?.count || 0,
-        );
-
-        if (status?.connected && (productsCount?.count || 0) === 0) {
-          console.log(
-            "[Sync] Connected but no data found. Please check sync rules and JWT permissions.",
-          );
-        }
       } catch (err) {
         console.error("[Sync] Initial sync check error:", err);
       }
