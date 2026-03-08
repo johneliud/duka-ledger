@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Sun, Moon, SquareArrowRightExit } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
@@ -11,6 +11,7 @@ export function Header() {
 	const { isDarkMode, toggleTheme } = useTheme();
 	const { t } = useTranslation();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const location = useLocation();
 
 	const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -25,6 +26,11 @@ export function Header() {
 		{ name: t('nav.settings'), path: '/settings', tour: 'settings' },
 	];
 
+	const isActive = (path: string) => {
+		if (path === '/dashboard') return location.pathname === path;
+		return location.pathname.startsWith(path);
+	};
+
 	return (
 		<header className="sticky h-20 flex items-center top-0 z-40 w-full bg-surface border-b border-border">
 			<div className="container mx-auto px-4 xl:px-0 h-16 flex items-center justify-between">
@@ -35,13 +41,17 @@ export function Header() {
 
 				{/* Middle: Desktop Navigation */}
 				{isAuthenticated && (
-					<nav className="hidden xl:flex items-center gap-6">
+					<nav className="hidden xl:flex items-center gap-2">
 						{navLinks.map((link) => (
 							<Link
 								key={link.name}
 								to={link.path}
 								data-tour={link.tour}
-								className="text-sm font-medium text-muted hover:text-primary transition-colors"
+								className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+									isActive(link.path)
+										? 'bg-accent text-white'
+										: 'text-muted hover:text-primary hover:bg-bg'
+								}`}
 							>
 								{link.name}
 							</Link>
@@ -107,13 +117,17 @@ export function Header() {
 							<span className="text-xl font-bold tracking-tight text-text">Duka Ledger</span>
 						</div>
 						
-						<nav className="flex flex-col gap-4">
+						<nav className="flex flex-col gap-2">
 							{navLinks.map((link) => (
 								<Link
 									key={link.name}
 									to={link.path}
 									onClick={toggleMenu}
-									className="text-lg font-medium text-text hover:text-primary py-2 transition-colors"
+									className={`text-lg font-medium py-3 px-4 rounded-lg transition-colors ${
+										isActive(link.path)
+											? 'bg-accent text-white'
+											: 'text-text hover:text-primary hover:bg-bg'
+									}`}
 								>
 									{link.name}
 								</Link>
