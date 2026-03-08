@@ -28,10 +28,11 @@ router.post("/token", (req: Request, res: Response) => {
   if (!JWT_SECRET) return;
 
   const KID = process.env.POWERSYNC_KID;
-  const token = jwt.sign({ sub: user_id, shop_id, user_id }, JWT_SECRET, {
-    expiresIn: "7d",
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    header: { kid: KID, alg: "HS256" } as any,
+  const AUD = process.env.POWERSYNC_AUD;
+  const token = jwt.sign({ sub: user_id, shop_id, user_id, aud: AUD }, JWT_SECRET, {
+    expiresIn: "1d",
+    keyid: KID,
+    algorithm: "HS256",
   });
   res.json({ token });
 });
@@ -92,16 +93,18 @@ router.post("/register", async (req: Request, res: Response) => {
 
     if (memberError) throw memberError;
 
-    const KID = process.env.POWERSYNC_KID;
+		const KID = process.env.POWERSYNC_KID;
+    const AUD = process.env.POWERSYNC_AUD;
     const token = jwt.sign(
       {
         sub: newUser.id,
         shop_id: newShop.id,
-        user_id: newUser.id,
+				user_id: newUser.id,
+        aud: AUD,
         role: "owner",
       },
       JWT_SECRET,
-      { expiresIn: "7d", header: { kid: KID, alg: "HS256" } as any },
+      { expiresIn: "1d", keyid: KID, algorithm: "HS256" },
     );
 
     res.status(201).json({
@@ -163,16 +166,18 @@ router.post("/login", async (req: Request, res: Response) => {
     const shopName = shopData?.name ?? "";
     const inviteCode = shopData?.invite_code ?? "";
 
-    const KID = process.env.POWERSYNC_KID;
+		const KID = process.env.POWERSYNC_KID;
+    const AUD = process.env.POWERSYNC_AUD;
     const token = jwt.sign(
       {
         sub: user.id,
         shop_id: membership.shop_id,
-        user_id: user.id,
+				user_id: user.id,
+        aud: AUD,
         role: membership.role,
       },
       JWT_SECRET,
-      { expiresIn: "7d", header: { kid: KID, alg: "HS256" } as any },
+      { expiresIn: "1d", keyid: KID, algorithm: "HS256" },
     );
 
     res.json({
@@ -243,16 +248,18 @@ router.post("/join", async (req: Request, res: Response) => {
 
     if (memberError) throw memberError;
 
-    const KID = process.env.POWERSYNC_KID;
+		const KID = process.env.POWERSYNC_KID;
+    const AUD = process.env.POWERSYNC_AUD;
     const token = jwt.sign(
       {
         sub: newUser.id,
         shop_id: shop.id,
-        user_id: newUser.id,
+				user_id: newUser.id,
+        aud: AUD,
         role: "member",
       },
       JWT_SECRET,
-      { expiresIn: "7d", header: { kid: KID, alg: "HS256" } as any },
+      { expiresIn: "1d", keyid: KID, algorithm: "HS256" },
     );
 
     res.status(201).json({
