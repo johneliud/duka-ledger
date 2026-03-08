@@ -2,7 +2,7 @@ import { useSales, useExpenses, useDebts, useProducts } from '@/hooks/useDatabas
 import { Link } from 'react-router-dom';
 import { TrendingUp, TrendingDown, DollarSign, AlertTriangle, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import { useSettings } from '@/lib/SettingsContext';
+import { useSettings } from '@/lib/useSettings';
 
 export function Dashboard() {
 	const { user, shop } = useAuth();
